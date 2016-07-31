@@ -41,4 +41,5 @@ final version should be my own work, unless otherwise stated.
 ### Who do I talk to? ###
 
 Murray Heymann
-heymann.murray _at_ gmail _dot_ com
+
+	heymann.murray _at_ gmail _dot_ com
