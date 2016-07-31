@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import client.*;
+import packet.*;
 
 /**
  *
@@ -9,15 +10,19 @@ public class StartClient {
 
 	/* Some data structure for those currently online */
 
+
     public static void main(String[] args)  {
 		String line = null;
 		Thread thread = null;
-		ChatClient client = new ChatClient("127.0.0.1", 8002);
-		/*
+		ChatClient client = null;
 		Scanner scanner = new Scanner(System.in);
-		*/
+		String name = null;
 
 		System.out.println("Starting up client");
+		System.out.printf("Please enter your username: ");
+		name = scanner.nextLine();
+		System.out.printf("Hello %s!  we will now try to log you onto the server\n", name);
+		client = new ChatClient(name, "127.0.0.1", 8002);
 
 		thread = new Thread(client);
 		thread.start();

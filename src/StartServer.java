@@ -24,9 +24,11 @@ public class StartServer {
 
 		System.out.println("Starting up server");
 		users = new Users();
-		listener = new ServerListener(ports);
+		listener = new ServerListener(ports, users);
 
+		/*
 		listener.setUsers(users);
+		*/
 
 		thread = new Thread(listener);
 		thread.start();

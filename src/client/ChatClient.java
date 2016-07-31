@@ -13,7 +13,7 @@ import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
-import packet.Packet;
+import packet.*;
 import packet.Serializer;
 import java.util.Scanner;
 
@@ -23,13 +23,25 @@ import java.util.Scanner;
  */
 public class ChatClient implements Runnable {
 	
+	private String name;
 	private int connectionPort = -1;
 	private String connectionAddress = null;
-	private ByteBuffer internalBuffer = null;
 	private SocketChannel socketChannel = null;
 
-    public ChatClient(String connectionAddress, int connectionPort) {
-		this.internalBuffer = ByteBuffer.allocate(1024);
+	public void attachClientShutDownHook(SocketChannel socketChannel){
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+			
+			}
+		});
+		System.out.println("Shut Down Hook Attached.");
+	}
+
+
+
+    public ChatClient(String name, String connectionAddress, int connectionPort) {
+		this.name = name;
 		this.connectionPort = connectionPort;
 		this.connectionAddress = connectionAddress;
 		this.socketChannel = null;
@@ -41,6 +53,7 @@ public class ChatClient implements Runnable {
 			this.socketChannel.configureBlocking(false);
 			this.socketChannel.connect(new InetSocketAddress(this.connectionAddress, this.connectionPort));
 			while (!this.socketChannel.finishConnect());
+			attachClientShutDownHook(this.socketChannel);
 		} catch (IOException e) {
 			System.out.printf("IOException:  failed to create SocketChannel\n");
 		}
@@ -53,75 +66,15 @@ public class ChatClient implements Runnable {
 
 	public void sendPacket(Packet packet) throws IOException 
 	{
-		int size;
-		ByteBuffer buffer = null;
-		ByteBuffer sizeBuffer = null;
-		ByteBuffer[] srcs = new ByteBuffer[2];
-		byte[] byteArray = null;
-		
-		byteArray = Serializer.serialize(packet);
-
-		sizeBuffer = ByteBuffer.allocate(4);
-
-		size = byteArray.length;
-		sizeBuffer.putInt(size);
-
-		buffer = ByteBuffer.wrap(byteArray);
-
-		sizeBuffer.flip();
-		srcs[0] = sizeBuffer;
-		srcs[1] = buffer;
-		this.socketChannel.write(srcs);
-		/*
-		this.socketChannel.write(sizeBuffer);
-		this.socketChannel.write(buffer);
-		*/
+		Packet.sendPacket(packet, this.socketChannel);
 	}
 
 	public Packet receivePacket() throws ClassNotFoundException, IOException {
-		final int intSize = 4;
-		int r = -1;
-		int packetSize = -1;
-		ByteBuffer buffer = null;
-		byte[] byteArr = null;
 		Packet packet = null;
-		
-		
-		buffer = ByteBuffer.allocate(intSize);
-		buffer.clear();
-		r = -1;
-		r = socketChannel.read(buffer);
-		if (r == 0) {
-			return null;
-		}
-		if (r == -1) {
-			this.socketChannel.close();
-			this.socketChannel = null;
-			return null;
-		}
 
-		packetSize = buffer.getInt(0);
-		if (packetSize <= 0) {
-			return null;
-		}
-		System.out.printf("%d bytes\n", packetSize);
-		buffer = null;
-		buffer = ByteBuffer.allocate(packetSize);
-
-		r = -1;
-		r = socketChannel.read(buffer);
-		if (r == 0) {
-			return null;
-		}
-		if (r == -1) {
-			this.socketChannel.close();
-			this.socketChannel = null;
-			return null;
-		}
-		byteArr = buffer.array();
-
-        packet = (Packet)Serializer.deserialize(byteArr);;
+		packet = Packet.receivePacket(this.socketChannel);
 		return packet;
+		
 	}
 
 	public void run() {
@@ -134,10 +87,17 @@ public class ChatClient implements Runnable {
 
 		while (true) {
 			line = scanner.nextLine();
+			packet = null;
 			if (line.equals("quit")) {
+				packet = new Packet(Code.QUIT, this.name);
+				try {
+					this.sendPacket(packet);
+				} catch (Exception e) {
+					System.out.println("Failed to send Offline signal");
+				}
 				break;
 			}
-			packet = new Packet(1, line);
+			packet = new Packet(Code.SEND, line);
 			line = null;
 
 			try {
@@ -161,6 +121,7 @@ public class ChatClient implements Runnable {
 		scanner.close();
 		try {
 			this.socketChannel.close();
+			this.socketChannel = null;
 		} catch (Exception e) {
 			System.out.println("Somehow doesn't want to close socketChannel");
 		}

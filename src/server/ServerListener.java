@@ -8,6 +8,7 @@ import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReadWriteLock;
+import packet.*;
 
 public class ServerListener implements Runnable
 {
@@ -17,11 +18,11 @@ public class ServerListener implements Runnable
 	private ReadWriteLock statusLock = null;
 	private Users users = null;
 
-	public ServerListener( int ports[] ) {
+	public ServerListener(int ports[], Users users) {
 		this.ports = ports;
 		this.runningStatus = true;
 		this.statusLock = new ReentrantReadWriteLock();
-		this.users = null;
+		this.users = users;
 	}
 
 	public void run() {
@@ -29,6 +30,7 @@ public class ServerListener implements Runnable
 			go();
 		} catch (Exception e) {
 			System.out.printf("IOException on opening selector\n");
+			e.printStackTrace();
 			return;
 		}
 	}
@@ -67,6 +69,12 @@ public class ServerListener implements Runnable
 		Iterator it = null;
 		SocketChannel sc = null;
 		SelectionKey newKey = null;
+		Packet packet = null;
+
+		if (this.users == null) {
+			System.err.printf("users not initialized]n");
+			System.exit(3);
+		}
 
 		// Create a new selector
 		selector = Selector.open();
@@ -121,7 +129,7 @@ public class ServerListener implements Runnable
 					newKey = sc.register(selector, SelectionKey.OP_READ);
 					it.remove();
 
-					System.out.println( "Got connection from "+sc );
+					System.out.println("Got connection from "+sc);
 				} else if ((key.readyOps() & SelectionKey.OP_READ)
 						== SelectionKey.OP_READ) {
 					// Read the data
@@ -130,6 +138,20 @@ public class ServerListener implements Runnable
 
 					// Echo data
 					int bytesEchoed = 0;
+					packet = null;
+					packet = Packet.receivePacket(sc);
+					if (packet == null) {
+						System.out.printf("Unknown user went offline\n");
+					} else if (packet.code == Code.QUIT) {
+						System.out.printf("User %s went offline\n", packet.data);
+						sc.close();
+					} else if (packet.code == Code.SEND) {
+						Packet.sendPacket(packet, sc);
+					} else if (packet.code == Code.ECHO) {
+						Packet.sendPacket(packet, sc);
+					} else if (packet.code == Code.BROADCAST) {
+					}
+					/*
 					while (true) {
 						echoBuffer.clear();
 
@@ -150,6 +172,7 @@ public class ServerListener implements Runnable
 					}
 
 					System.out.println( "Echoed "+bytesEchoed+" from "+sc );
+					*/
 
 					it.remove();
 				}
@@ -161,6 +184,7 @@ public class ServerListener implements Runnable
 	static public void main( String args[] ) throws Exception {
 		ServerListener listener = null;
 		Thread thread = null;
+		Users users = null;
 		if (args.length <= 0) {
 			System.err.println("Usage: java ServerListener port [port port ...]");
 			System.exit(1);
@@ -172,7 +196,8 @@ public class ServerListener implements Runnable
 			ports[i] = Integer.parseInt( args[i] );
 		}
 
-		listener = new ServerListener( ports );
+		users = new Users();
+		listener = new ServerListener(ports, users);
 		thread = new Thread(listener);
 		thread.start();
 	}

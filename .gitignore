@@ -34,6 +34,7 @@
 *.py~
 *.c~
 *.h~
+*.java~
 
 # Debug files
 *.dSYM/
@@ -41,3 +42,4 @@
 
 *.pdf
 nio/*
+*.swp
