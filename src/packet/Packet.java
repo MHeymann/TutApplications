@@ -19,12 +19,32 @@ import java.util.*;
 public class Packet implements Serializable {
 
     public int code;
+	public String name;
     public String data;
+	public String to;
 
     
-    public Packet(int code, String data) {
-        this.code = code;
-        this.data = data;
+    public Packet(int code, String name, String data, String to) {
+		this.code = code;
+		this.name = name;
+		this.data = null;
+		this.to = null;
+
+		switch (code) {
+			case Code.QUIT:
+				break;
+			case Code.SEND:
+				this.to = to;
+			case Code.ECHO:
+			case Code.BROADCAST:
+			case Code.LOGIN:
+				this.data = data;
+				break;
+			default:
+				System.err.printf("Invalid code upon creating packet.\n");
+				break;
+		}
+
     }
     
 

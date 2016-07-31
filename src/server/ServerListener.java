@@ -116,7 +116,7 @@ public class ServerListener implements Runnable
 
 				if ((key.readyOps() & SelectionKey.OP_ACCEPT)
 						== SelectionKey.OP_ACCEPT) {
-					// Accept the new connection
+					/* Accept the new connection */
 					serverSocketChannel = null;
 					serverSocketChannel = (ServerSocketChannel)key.channel();
 
@@ -124,7 +124,7 @@ public class ServerListener implements Runnable
 					sc = serverSocketChannel.accept();
 					sc.configureBlocking(false);
 
-					// Add the new connection to the selector
+					/* Add the new connection to the selector */
 					newKey = null;
 					newKey = sc.register(selector, SelectionKey.OP_READ);
 					it.remove();
@@ -132,51 +132,32 @@ public class ServerListener implements Runnable
 					System.out.println("Got connection from "+sc);
 				} else if ((key.readyOps() & SelectionKey.OP_READ)
 						== SelectionKey.OP_READ) {
-					// Read the data
+					/* Read the data */
 					sc = null;
 					sc = (SocketChannel)key.channel();
-
-					// Echo data
-					int bytesEchoed = 0;
 					packet = null;
 					packet = Packet.receivePacket(sc);
+
+					/* Process data */
 					if (packet == null) {
-						System.out.printf("Unknown user went offline\n");
+						users.removeChannel(sc);
+						/* doubly redundant */
+						sc.close();
 					} else if (packet.code == Code.QUIT) {
-						System.out.printf("User %s went offline\n", packet.data);
+						users.removeName(packet.name);
+						/* redundant */
 						sc.close();
 					} else if (packet.code == Code.SEND) {
-						Packet.sendPacket(packet, sc);
+						users.sendPacket(packet);
 					} else if (packet.code == Code.ECHO) {
 						Packet.sendPacket(packet, sc);
 					} else if (packet.code == Code.BROADCAST) {
+					} else if (packet.code == Code.LOGIN) {
+						this.users.addConnection(packet.name, sc);
 					}
-					/*
-					while (true) {
-						echoBuffer.clear();
-
-						int r = sc.read( echoBuffer );
-
-						if (r == 0) {
-							break;
-						}
-						if (r == -1) {
-							sc.close();
-							break;
-						}
-
-						echoBuffer.flip();
-
-						sc.write( echoBuffer );
-						bytesEchoed += r;
-					}
-
-					System.out.println( "Echoed "+bytesEchoed+" from "+sc );
-					*/
-
+				
 					it.remove();
 				}
-
 			}
 		}
 	}

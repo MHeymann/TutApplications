@@ -10,6 +10,7 @@ import com.sun.corba.se.pept.encoding.InputObject;
 import java.io.BufferedReader;
 */
 import java.io.*;
+import java.io.Console;
 import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
@@ -32,10 +33,9 @@ public class ChatClient implements Runnable {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-			
+				System.out.printf("JVM Shutting down\n");
 			}
 		});
-		System.out.println("Shut Down Hook Attached.");
 	}
 
 
@@ -85,11 +85,33 @@ public class ChatClient implements Runnable {
 		ByteBuffer buffer = null;
 		this.connect();
 
+		System.out.printf("Please provide the password for %s: ", this.name);
+
+		Console cons;
+		char[] passwd;
+		if ((cons = System.console()) != null &&
+				(passwd = cons.readPassword()) != null) {
+			line = new String(passwd);
+			java.util.Arrays.fill(passwd, ' ');
+		}
+
+		/*
+		*/
+		System.out.printf("%s with password %s \n", this.name, line);
+		packet = new Packet(Code.LOGIN, this.name, line, null);
+		line = null;
+		try {
+			this.sendPacket(packet);
+		} catch (Exception e) {
+			System.out.println("Failed to send login details");
+		}
+		
+
 		while (true) {
 			line = scanner.nextLine();
 			packet = null;
 			if (line.equals("quit")) {
-				packet = new Packet(Code.QUIT, this.name);
+				packet = new Packet(Code.QUIT, this.name, null, null);
 				try {
 					this.sendPacket(packet);
 				} catch (Exception e) {
@@ -97,13 +119,14 @@ public class ChatClient implements Runnable {
 				}
 				break;
 			}
-			packet = new Packet(Code.SEND, line);
+			packet = new Packet(Code.SEND, this.name, line, this.name);
 			line = null;
 
 			try {
 				this.sendPacket(packet);
 			} catch (Exception e) {
 				System.out.println("Sending Failed");
+				e.printStackTrace();
 			}
 			packet = null;
 
@@ -114,6 +137,7 @@ public class ChatClient implements Runnable {
 				} catch (Exception e) {
 					/*
 					System.out.println("Receiving Failed");
+					e.printStackTrace();
 					*/
 				}
 			}
