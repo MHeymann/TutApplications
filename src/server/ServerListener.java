@@ -17,12 +17,14 @@ public class ServerListener implements Runnable
 	private boolean runningStatus = true;
 	private ReadWriteLock statusLock = null;
 	private Users users = null;
+	private ServerSpeaker speaker = null;
 
-	public ServerListener(int ports[], Users users) {
+	public ServerListener(int ports[], Users users, ServerSpeaker speaker) {
 		this.ports = ports;
 		this.runningStatus = true;
 		this.statusLock = new ReentrantReadWriteLock();
 		this.users = users;
+		this.speaker = speaker;
 	}
 
 	public void run() {
@@ -70,6 +72,7 @@ public class ServerListener implements Runnable
 		SocketChannel sc = null;
 		SelectionKey newKey = null;
 		Packet packet = null;
+		String line = null;
 
 		if (this.users == null) {
 			System.err.printf("users not initialized]n");
@@ -148,10 +151,11 @@ public class ServerListener implements Runnable
 						/* redundant */
 						sc.close();
 					} else if (packet.code == Code.SEND) {
-						users.sendPacket(packet);
+						this.speaker.addPacketToQueue(packet);
 					} else if (packet.code == Code.ECHO) {
 						Packet.sendPacket(packet, sc);
 					} else if (packet.code == Code.BROADCAST) {
+						this.speaker.broadcast(packet);
 					} else if (packet.code == Code.LOGIN) {
 						this.users.addConnection(packet.name, sc);
 					}
@@ -162,8 +166,9 @@ public class ServerListener implements Runnable
 		}
 	}
 
-	static public void main( String args[] ) throws Exception {
+	public static void main( String args[] ) throws Exception {
 		ServerListener listener = null;
+		ServerSpeaker speaker = null;
 		Thread thread = null;
 		Users users = null;
 		if (args.length <= 0) {
@@ -178,7 +183,8 @@ public class ServerListener implements Runnable
 		}
 
 		users = new Users();
-		listener = new ServerListener(ports, users);
+		speaker = new ServerSpeaker(users);
+		listener = new ServerListener(ports, users, speaker);
 		thread = new Thread(listener);
 		thread.start();
 	}

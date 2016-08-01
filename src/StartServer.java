@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import server.Users;
 import server.ServerListener;
+import server.ServerSpeaker;
 
 /**
  *
@@ -11,8 +12,10 @@ public class StartServer {
 	/* Some data structure for those currently online */
 
     public static void main(String[] args)  {
-		Thread thread = null;
+		Thread listenThread = null;
+		Thread speakThread = null;
 		Users users = null;
+		ServerSpeaker speaker = null;
 		ServerListener listener = null;
 		Scanner scanner = null;
 		int[] ports;
@@ -24,14 +27,13 @@ public class StartServer {
 
 		System.out.println("Starting up server");
 		users = new Users();
-		listener = new ServerListener(ports, users);
+		speaker = new ServerSpeaker(users);
+		listener = new ServerListener(ports, users, speaker);
 
-		/*
-		listener.setUsers(users);
-		*/
-
-		thread = new Thread(listener);
-		thread.start();
+		listenThread = new Thread(listener);
+		listenThread.start();
+		speakThread = new Thread(speaker);
+		speakThread.start();
 
 		System.out.println("Server running");
 
@@ -42,13 +44,13 @@ public class StartServer {
 			} else if (line.equals("check")) {
 				System.out.println("Server running");
 			} else {
-				System.out.println(line);
 			}
 		}
 
 		scanner.close();
 		listener.kill();
 		System.out.println("I'm Here");
+		System.exit(0);
 	
     }
 

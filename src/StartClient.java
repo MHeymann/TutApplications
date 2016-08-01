@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import client.*;
 import packet.*;
+import java.io.Console;
 
 /**
  *
@@ -10,41 +11,44 @@ public class StartClient {
 
 	/* Some data structure for those currently online */
 
-
     public static void main(String[] args)  {
 		String line = null;
-		Thread thread = null;
-		ChatClient client = null;
-		Scanner scanner = new Scanner(System.in);
 		String name = null;
+		Thread threadSpeaker = null;
+		Thread threadListen = null;
+		ClientSpeaker speaker = null;
+		ClientListener listener = null;
+		Scanner scanner = new Scanner(System.in);
 
 		System.out.println("Starting up client");
 		System.out.printf("Please enter your username: ");
 		name = scanner.nextLine();
-		System.out.printf("Hello %s!  we will now try to log you onto the server\n", name);
-		client = new ChatClient(name, "127.0.0.1", 8002);
+		speaker = new ClientSpeaker(name, "127.0.0.1", 8002);
+		speaker.setGui(false);
 
-		thread = new Thread(client);
-		thread.start();
+		
+		System.out.printf("Please provide the password for %s: ", name);
 
-		System.out.println("Client running");
-
-		/*
-		while(true) {
-			line = scanner.nextLine();
-			if (line.equals("quit")) {
-				break;
-			} else {
-				System.out.println(line);
-			}
+		Console cons;
+		char[] passwd;
+		if ((cons = System.console()) != null &&
+				(passwd = cons.readPassword()) != null) {
+			line = new String(passwd);
+			java.util.Arrays.fill(passwd, ' ');
 		}
-		*/
 
-		/*
-		scanner.close();
-		*/
-		System.out.println("Main Thread Waiting to exit");
-	
+		System.out.printf("%s with password %s \n", name, line);
+		if (!speaker.login(line)) {
+			return;
+		}
+		line = null;
+
+		listener = new ClientListener(speaker.getSocketChannel());
+
+		threadSpeaker = new Thread(speaker);
+		threadListen = new Thread(listener);
+		threadSpeaker.start();
+		threadListen.start();
     }
 
 }

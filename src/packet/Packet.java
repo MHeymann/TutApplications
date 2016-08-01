@@ -34,9 +34,9 @@ public class Packet implements Serializable {
 			case Code.QUIT:
 				break;
 			case Code.SEND:
+			case Code.BROADCAST:
 				this.to = to;
 			case Code.ECHO:
-			case Code.BROADCAST:
 			case Code.LOGIN:
 				this.data = data;
 				break;
@@ -101,6 +101,14 @@ public class Packet implements Serializable {
 		r = -1;
 		r = socketChannel.read(buffer);
 		if (r == 0) {
+			/* TODO 
+			 * this is currently handled as user going offline.  is this still
+			 * valid?
+			 * */
+
+			System.err.printf("This shouldn't happen!!!!!\n");
+			System.err.printf("the buffer is empty for some reason.  \n");
+			System.err.printf("****************************************************** \n");
 			return null;
 		}
 		if (r == -1) {
@@ -111,9 +119,15 @@ public class Packet implements Serializable {
 
 		packetSize = buffer.getInt(0);
 		if (packetSize <= 0) {
+			/* TODO 
+			 * this is currently handled as user going offline.  is this still
+			 * valid?
+			 * */
 			return null;
 		}
+		/*
 		System.out.printf("%d bytes\n", packetSize);
+		*/
 		buffer = null;
 		buffer = ByteBuffer.allocate(packetSize);
 
