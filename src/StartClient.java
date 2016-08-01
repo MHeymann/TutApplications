@@ -9,7 +9,18 @@ import java.io.Console;
  */
 public class StartClient {
 
-	/* Some data structure for those currently online */
+	public static String getPassword() {
+		String line = null;
+		Console cons = null;
+		char[] passwd = null;
+
+		if ((cons = System.console()) != null &&
+				(passwd = cons.readPassword()) != null) {
+			line = new String(passwd);
+			java.util.Arrays.fill(passwd, ' ');
+		}
+		return line;
+	}
 
     public static void main(String[] args)  {
 		String line = null;
@@ -20,29 +31,17 @@ public class StartClient {
 		ClientListener listener = null;
 		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("Starting up client");
 		System.out.printf("Please enter your username: ");
 		name = scanner.nextLine();
-		speaker = new ClientSpeaker(name, "127.0.0.1", 8002);
-		speaker.setGui(false);
+		speaker = new ClientSpeaker(name, "127.0.0.1", 8002, false);
 
-		
 		System.out.printf("Please provide the password for %s: ", name);
-
-		Console cons;
-		char[] passwd;
-		if ((cons = System.console()) != null &&
-				(passwd = cons.readPassword()) != null) {
-			line = new String(passwd);
-			java.util.Arrays.fill(passwd, ' ');
-		}
+		line = getPassword();
 
 		System.out.printf("%s with password %s \n", name, line);
 		if (!speaker.login(line)) {
 			return;
 		}
-		line = null;
-
 		listener = new ClientListener(speaker.getSocketChannel());
 
 		threadSpeaker = new Thread(speaker);
