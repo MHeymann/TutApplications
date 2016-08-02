@@ -10,9 +10,16 @@ import packet.*;
 public class ClientListener implements Runnable {
 
 	private SocketChannel socketChannel = null;
+	private ChatClient guiClient = null;
 
 	public ClientListener(SocketChannel socketChannel) {
 		this.socketChannel = socketChannel;
+		this.guiClient = null;
+	}
+
+	public ClientListener(SocketChannel socketChannel, ChatClient guiClient) {
+		this.socketChannel = socketChannel;
+		this.guiClient = guiClient;
 	}
 
 	public void run() 
@@ -25,16 +32,27 @@ public class ClientListener implements Runnable {
 			return;
 		}
 	}
+
+	private void outputString(String s) {
+		if (guiClient != null) {
+			this.guiClient.append(s);
+		} else {
+			System.out.printf("%s> ", s);
+		}
+	}
+
 	public void go() throws Exception 
 	{
 		SocketChannel sc = null;
 		Selector selector = null;
 		SelectionKey key = null;
-		Set selectedKeys = null;
-		Iterator it = null;
+		Set<SelectionKey> selectedKeys = null;
+		Iterator<SelectionKey> it = null;
 		SelectionKey newKey = null;
 		Packet packet = null;
 		int num = -1;
+		String output = null;
+
 
 		selector = Selector.open();
 		newKey = this.socketChannel.register(selector, SelectionKey.OP_READ);
@@ -48,7 +66,7 @@ public class ClientListener implements Runnable {
 
 			while (it.hasNext()) {
 				key = null;
-				key = (SelectionKey)it.next();
+				key = it.next();
 				if ((key.readyOps() & SelectionKey.OP_READ)
 						== SelectionKey.OP_READ) {
 					/* Read the data */
@@ -60,16 +78,30 @@ public class ClientListener implements Runnable {
 					/* Process data */
 					if (packet == null) {
 						/* server is offline */
-						System.out.println("Server went offline\n");
+						output = String.format("Server went offline\n");
+						outputString(output);
 						sc.close();
 					} else if (packet.code == Code.SEND) {
-						System.out.printf("\b\b%s: %s\n> ", packet.name, packet.data);
+						output = String.format("\b\b%s: %s\n", packet.name, packet.data);
+						outputString(output);
 					} else if (packet.code == Code.ECHO) {
-						System.out.printf("\b\bYOU echoed: %s\n> ", packet.data);
+						output = String.format("\b\bYOU echoed: %s\n", packet.data);
+						outputString(output);
 					} else if (packet.code == Code.BROADCAST) {
-						System.out.printf("\b\b%s Broadcast: %s\n> ", packet.name, packet.data);
+						output = String.format("\b\b%s Broadcast: %s\n", packet.name, packet.data);
+						outputString(output);
+					} else if (packet.code == Code.GET_ULIST) {
+						if (guiClient != null) {
+							guiClient.showOnlineUsers(packet.users);
+						} else {
+							System.out.printf("Online Users:\n");
+							for (String s: packet.users) {
+								System.out.printf("%s\n", s);
+							}
+						}
 					} else {
-						System.out.printf("This is weird behaviour by the server\n");
+						output = String.format("This is weird behaviour by the server\n");
+						outputString(output);
 					}
 				}
 				it.remove();

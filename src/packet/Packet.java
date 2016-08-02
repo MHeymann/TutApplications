@@ -22,6 +22,7 @@ public class Packet implements Serializable {
 	public String name;
     public String data;
 	public String to;
+	public Set<String> users;
 
     
     public Packet(int code, String name, String data, String to) {
@@ -29,9 +30,11 @@ public class Packet implements Serializable {
 		this.name = name;
 		this.data = null;
 		this.to = null;
+		this.users = null;
 
 		switch (code) {
 			case Code.QUIT:
+			case Code.GET_ULIST:
 				break;
 			case Code.SEND:
 			case Code.BROADCAST:
@@ -47,6 +50,9 @@ public class Packet implements Serializable {
 
     }
     
+	public void setUserList(Set<String> users) {
+		this.users = users;
+	}
 
     public int getCode() {
         return code;

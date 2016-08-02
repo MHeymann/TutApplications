@@ -74,6 +74,18 @@ public class ClientSpeaker implements Runnable {
 		return true;
     }
 
+	public void getOnlineNames() {
+		Packet packet = new Packet(Code.GET_ULIST, this.name, null, null);
+		if (!this.sendPacket(packet)) {
+			System.err.printf("Couldn't request userlist\n");
+		}
+	}
+
+	public boolean sendString(String s, String to) {
+		Packet packet = new Packet(Code.SEND, this.name, s, to);
+		return this.sendPacket(packet);
+	}
+
 	public boolean sendPacket(Packet packet)
 	{
 		try {

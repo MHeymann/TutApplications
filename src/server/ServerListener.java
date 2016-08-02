@@ -67,8 +67,8 @@ public class ServerListener implements Runnable
 		ServerSocket ss = null;
 		InetSocketAddress address = null;
 		SelectionKey key = null;
-		Set selectedKeys = null;
-		Iterator it = null;
+		Set<SelectionKey> selectedKeys = null;
+		Iterator<SelectionKey> it = null;
 		SocketChannel sc = null;
 		SelectionKey newKey = null;
 		Packet packet = null;
@@ -115,7 +115,7 @@ public class ServerListener implements Runnable
 					break;
 				}
 				key = null;
-				key = (SelectionKey)it.next();
+				key = it.next();
 
 				if ((key.readyOps() & SelectionKey.OP_ACCEPT)
 						== SelectionKey.OP_ACCEPT) {
@@ -158,6 +158,8 @@ public class ServerListener implements Runnable
 						this.speaker.broadcast(packet);
 					} else if (packet.code == Code.LOGIN) {
 						this.users.addConnection(packet.name, sc);
+					} else if (packet.code == Code.GET_ULIST) {
+						this.speaker.addPacketToQueue(packet);
 					}
 				
 					it.remove();

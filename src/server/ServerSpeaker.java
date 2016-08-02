@@ -39,6 +39,7 @@ public class ServerSpeaker implements Runnable {
 
 	public void run() {
 		Packet packet = null;
+		Set<String> onlineUsers = null;
 		while(true) {
 			try {
 				System.out.println("acquiring sem");
@@ -49,7 +50,16 @@ public class ServerSpeaker implements Runnable {
 			}
 			packet = null;
 			packet = q.poll();
-			System.out.printf("Sending message: %s -> %s\n", packet.name, packet.to);
+			if (packet.code == Code.SEND) {
+				System.out.printf("Sending message: %s -> %s\n", packet.name, packet.to);
+			} else if (packet.code == Code.GET_ULIST) {
+				System.out.printf("Sending list of online users to %s\n", packet.name);
+				onlineUsers = null;
+				onlineUsers = users.getNames();
+				packet.setUserList(onlineUsers);
+				packet.to = packet.name;
+				packet.name = null;
+			}
 			this.users.sendPacket(packet);
 			packet = null;
 		}
