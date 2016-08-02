@@ -1,5 +1,4 @@
 #! /bin/bash
-rm -rv StartServer.class
 rm -rv server/*.class
-echo javac StartServer.java
-javac StartServer.java
+echo javac server/ChatServer.java
+javac server/ChatServer.java

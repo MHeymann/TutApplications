@@ -64,7 +64,6 @@ public class ClientSpeaker implements Runnable {
 			this.socketChannel.configureBlocking(false);
 			this.socketChannel.connect(new InetSocketAddress(this.connectionAddress, this.connectionPort));
 			while (!this.socketChannel.finishConnect());
-			attachClientShutDownHook(this.socketChannel);
 		} catch (IOException e) {
 			System.out.printf("IOException:  failed to create SocketChannel\n");
 			return false;
@@ -113,6 +112,7 @@ public class ClientSpeaker implements Runnable {
 	public boolean login(String password) 
 	{
 		Packet packet = null;
+		Selector selector = null;
 
 		if (!this.connect()) {
 			System.err.printf("Failed to connect.  Couldn't login\n");
@@ -125,7 +125,40 @@ public class ClientSpeaker implements Runnable {
 			System.out.println("Failed to send login details");
 			return false;
 		}
-		return true;
+
+		try {
+			selector = Selector.open();
+		} catch (Exception e) {
+		}
+
+		try {
+			this.socketChannel.register(selector, SelectionKey.OP_READ);
+		} catch (Exception e) {
+		}
+
+		try {
+			selector.select();
+		} catch (Exception e) {
+		}
+		try {
+			packet = Packet.receivePacket(this.socketChannel);
+		} catch (Exception e) {
+		}
+
+		if (packet == null) {
+			return false;
+		}
+		if (packet.data == null) {
+			return false;
+		}
+
+		if (packet.data.equals("accept")) {
+			attachClientShutDownHook(this.socketChannel);
+			return true;
+		} else {
+			return false;
+		}
+		
 	}
 
 	public boolean logoff() 

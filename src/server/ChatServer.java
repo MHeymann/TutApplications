@@ -1,3 +1,5 @@
+package server;
+
 import java.util.Scanner;
 import server.Users;
 import server.ServerListener;
@@ -7,7 +9,7 @@ import server.ServerSpeaker;
  *
  * @author Murray Heymann
  */
-public class StartServer {
+public class ChatServer {
 
 	/* Some data structure for those currently online */
 

@@ -31,7 +31,7 @@ public class ServerListener implements Runnable
 		try {
 			go();
 		} catch (Exception e) {
-			System.out.printf("IOException on opening selector\n");
+			System.out.printf("IOException on running listener\n");
 			e.printStackTrace();
 			return;
 		}
@@ -144,10 +144,14 @@ public class ServerListener implements Runnable
 					/* Process data */
 					if (packet == null) {
 						users.removeChannel(sc);
+						speaker.pushUserList();
+						
 						/* doubly redundant */
 						sc.close();
 					} else if (packet.code == Code.QUIT) {
 						users.removeName(packet.name);
+						speaker.pushUserList();
+						packet = null;
 						/* redundant */
 						sc.close();
 					} else if (packet.code == Code.SEND) {
@@ -157,7 +161,17 @@ public class ServerListener implements Runnable
 					} else if (packet.code == Code.BROADCAST) {
 						this.speaker.broadcast(packet);
 					} else if (packet.code == Code.LOGIN) {
-						this.users.addConnection(packet.name, sc);
+						Packet p;
+						if (this.checkUserPassword(packet.name, packet.data) && 
+								this.users.addConnection(packet.name, sc)) {
+							speaker.pushUserList();
+							p = new Packet(Code.SEND, "admin", "accept", packet.name);
+							Packet.sendPacket(p, sc);
+						} else {
+							p = new Packet(Code.SEND, "admin", "denial", packet.name);
+							Packet.sendPacket(p, sc);
+							sc.close();
+						}
 					} else if (packet.code == Code.GET_ULIST) {
 						this.speaker.addPacketToQueue(packet);
 					}
@@ -166,6 +180,10 @@ public class ServerListener implements Runnable
 				}
 			}
 		}
+	}
+
+	private boolean checkUserPassword(String name, String pw) {
+		return true;
 	}
 
 	public static void main( String args[] ) throws Exception {

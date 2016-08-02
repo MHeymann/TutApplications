@@ -56,6 +56,7 @@ public class ClientListener implements Runnable {
 
 		selector = Selector.open();
 		newKey = this.socketChannel.register(selector, SelectionKey.OP_READ);
+		selector.select();
 		while (true) {
 			num = selector.select();
 
@@ -82,13 +83,13 @@ public class ClientListener implements Runnable {
 						outputString(output);
 						sc.close();
 					} else if (packet.code == Code.SEND) {
-						output = String.format("\b\b%s: %s\n", packet.name, packet.data);
+						output = String.format("%s: %s\n", packet.name, packet.data);
 						outputString(output);
 					} else if (packet.code == Code.ECHO) {
-						output = String.format("\b\bYOU echoed: %s\n", packet.data);
+						output = String.format("YOU echoed: %s\n", packet.data);
 						outputString(output);
 					} else if (packet.code == Code.BROADCAST) {
-						output = String.format("\b\b%s Broadcast: %s\n", packet.name, packet.data);
+						output = String.format("%s Broadcast: %s\n", packet.name, packet.data);
 						outputString(output);
 					} else if (packet.code == Code.GET_ULIST) {
 						if (guiClient != null) {

@@ -7,4 +7,6 @@ public class Code {
 	public static final int BROADCAST	= 3;
 	public static final int LOGIN		= 4;
 	public static final int GET_ULIST	= 5;
+	public static final int ACCEPT		= 6;
+	public static final int DENIAL		= 7;
 }

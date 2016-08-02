@@ -2,6 +2,7 @@ package client;
 
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Arrays;
 import client.*;
 import packet.*;
 import java.io.Console;
@@ -34,6 +35,7 @@ public class ChatClient extends JFrame implements ActionListener {
 	private ClientListener listener = null;
 	/* The Client Speaker for sending messages to the server */
 	private ClientSpeaker speaker = null;
+	private String myName = null;
 
 	/* The port to connect to */
 	private int portNo = -1;
@@ -117,9 +119,20 @@ public class ChatClient extends JFrame implements ActionListener {
 	}
 
 	public void showOnlineUsers(Set<String> users) {
+		int i;
+		String[] userArray = new String[users.size()];
+
+		i = 0;
+		for (String s: users){
+			userArray[i] = s;
+			i++;
+		}
+
+		Arrays.sort(userArray);
+
 		taUsers.setText("");
-			taUsers.append("Online Users:\n");
-		for (String s: users) {
+		taUsers.append("Online Users:\n");
+		for (String s: userArray) {
 			taUsers.append(s + "\n");
 		}
 	}
@@ -130,7 +143,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		whosThere.setEnabled(false);
 		label.setText("Enter your Username and password below");
 		tfName.setText("name");
-		tfData.setText("");
+		tfData.setText("password");
 		tfPortNo.setText("" + this.portNo);
 		tfServerIP.setText(this.hostAddress);
 		tfServerIP.setEditable(true);
@@ -138,6 +151,8 @@ public class ChatClient extends JFrame implements ActionListener {
 		tfName.removeActionListener(this);
 		tfData.removeActionListener(this);
 		connected = false;
+		taMessages.setText("");
+		taUsers.setText("");
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -145,29 +160,30 @@ public class ChatClient extends JFrame implements ActionListener {
 
 		/* logout being the button */
 		if (o == logout) {
-			/* TODO 
-			speaker.blablabla
-			*/
 			speaker.logoff();
 			this.brokenConnection();
 			return;
 		} else if (o == whosThere) {
 			speaker.getOnlineNames();
-			/* TODO 
-			speaker.blablabla
-			*/
 			return;
 		}
 
 		if (connected) {
 			/* sending message */
-			/* TODO 
-			speaker.blablabla
-			*/
-			speaker.sendString(tfData.getText(), tfName.getText());
-			
-			tfName.setText("");
-			tfData.setText("");
+			if (o == tfName) {
+				tfData.requestFocus();
+			} else {
+				String mtext = tfData.getText();
+				String rname = tfName.getText();
+				if (speaker.sendString(mtext, rname)) {
+					this.append(this.myName + " to " + rname + ": " + mtext + "\n");
+				} else {
+					this.append("Some error sending message\n");
+				}
+				
+				tfName.setText("");
+				tfData.setText("");
+			}
 			return;
 		}
 
@@ -199,7 +215,9 @@ public class ChatClient extends JFrame implements ActionListener {
 				return;
 			}
 			
+			System.out.printf("lets create a speaker\n");
 			this.speaker = new ClientSpeaker(username, server, port, true);
+			this.myName = username;
 			/* open connection if possible */
 
 			if (!this.speaker.login(password)) {
@@ -211,6 +229,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			thread.start();
 
 			tfData.setText("");
+			tfName.setText("");
 			label.setText("Enter recepient and message");
 			connected = true;
 
@@ -221,6 +240,8 @@ public class ChatClient extends JFrame implements ActionListener {
 			tfPortNo.setEditable(false);
 			tfName.addActionListener(this);
 			tfData.addActionListener(this);
+
+			this.setTitle(this.getTitle() + " - " + this.myName);
 
 		}
 	}

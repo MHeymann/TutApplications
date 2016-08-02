@@ -105,7 +105,12 @@ public class Packet implements Serializable {
 		buffer = ByteBuffer.allocate(intSize);
 		buffer.clear();
 		r = -1;
-		r = socketChannel.read(buffer);
+		try {
+			r = socketChannel.read(buffer);
+		} catch (IOException e) {
+			System.out.printf("io exceoption, user probably went offline in a rogue fassion\n");
+			e.printStackTrace();
+		}
 		if (r == 0) {
 			/* TODO 
 			 * this is currently handled as user going offline.  is this still

@@ -1,3 +1,3 @@
 #! /bin/bash
-echo java StartServer
-java StartServer
+echo java server.ChatServer
+java server.ChatServer

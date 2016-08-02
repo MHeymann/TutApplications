@@ -82,7 +82,7 @@ public class Users {
 		}
 		socketChannels.remove(sc);
 		names.remove(n);
-		System.out.printf("User %s went offline, %d still online\n", n, socketChannels.size());
+		System.out.printf("User '%s' went offline, %d still online\n", n, socketChannels.size());
 		try {
 			sc.close();
 		} catch (Exception e) {
@@ -112,26 +112,34 @@ public class Users {
 		} catch (Exception e) {
 			System.out.printf("Exception when closing channel:  probably already closed\n");
 		}
-		System.out.printf("User %s went offline, %d still online\n", n, names.size());
+		System.out.printf("User '%s' went offline, %d still online\n", n, names.size());
 		this.hsProtect.unlock();
 	}
 
-	public void addConnection(String n, SocketChannel sc) {
+	public boolean addConnection(String n, SocketChannel sc) {
+		boolean status;
 		if (n == null) {
-			return;
+			return false;
 		}
 		if (sc == null) {
-			return;
+			return false;
 		}
-		System.out.printf("Adding\n");
 		/*
 		 * DONE:  add Lock 
 		 */
 		this.hsProtect.lock();
-		socketChannels.put(sc, n);
-		names.put(n, sc);
+
+		status = (!this.names.containsKey(n) && !this.socketChannels.containsKey(sc));
+		if (status) {
+			this.socketChannels.put(sc, n);
+			this.names.put(n, sc);
+		}
+
 		this.hsProtect.unlock();
-		System.out.printf("Added\n");
+		if (status) {
+			System.out.printf("%s connected\n", n);
+		}
+		return status;
 	}
    
 }

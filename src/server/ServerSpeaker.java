@@ -25,14 +25,35 @@ public class ServerSpeaker implements Runnable {
 		this.sem.release();
 	}
 
+	public void pushUserList() {
+		Packet packet = null;
+		Set<String> names = null;
+
+		names = users.getNames();
+		for (String to: names) {
+			packet = null;
+			packet = new Packet(Code.GET_ULIST, to, null, to);
+			packet.setUserList(names);
+			System.out.printf("sending list to %s\n", to);
+			this.addPacketToQueue(packet);
+		}
+	}
+
 	public void broadcast(Packet packet) {
 		Packet copy = null;
-		Set<String> names = users.getNames();	
+		Set<String> names = null;
+
+		names = users.getNames();
 		System.out.printf("Broadcasting\n");
 		for(String to: names) {
 			System.out.printf("%s to be added for broadcasting\n", to);
 			copy = null;
-			copy = new Packet(Code.BROADCAST, packet.name, packet.data, to);
+			copy = new Packet(packet.code, packet.name, packet.data, to);
+			/*
+			if (packet.code == Code.GET_ULIST) {
+				copy.setUserList(names);
+			}
+			*/
 			this.addPacketToQueue(copy);
 		}
 	}
@@ -51,14 +72,19 @@ public class ServerSpeaker implements Runnable {
 			packet = null;
 			packet = q.poll();
 			if (packet.code == Code.SEND) {
-				System.out.printf("Sending message: %s -> %s\n", packet.name, packet.to);
+				System.out.printf("Sending message: %s -> %s %s\n", packet.name, packet.to, packet.data);
 			} else if (packet.code == Code.GET_ULIST) {
-				System.out.printf("Sending list of online users to %s\n", packet.name);
 				onlineUsers = null;
-				onlineUsers = users.getNames();
-				packet.setUserList(onlineUsers);
-				packet.to = packet.name;
+				if (packet.users == null) {
+					onlineUsers = users.getNames();
+					packet.setUserList(onlineUsers);
+				}
+				if (packet.to == null) {
+					/* only when an individual asked, not when being broadcast */
+					packet.to = packet.name;
+				}
 				packet.name = null;
+				System.out.printf("Sending list of online users to %s\n", packet.to);
 			}
 			this.users.sendPacket(packet);
 			packet = null;
