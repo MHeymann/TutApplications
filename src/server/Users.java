@@ -8,13 +8,17 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.nio.channels.*;
 
-
 import packet.Packet;
 
-
-/**
+/*
+ * author Murray Heymann
  *
- * @author Murray Heymann
+ * This data structure that is used to keep track of who is currently online.  
+ * If a database used for keeping known users were added, it would be loaded
+ * into a further data structure in here.
+ *
+ * "Look around, ook around, look at where your are!!"
+ * That Would Be Enough, Hamilton
  */
 public class Users {
 

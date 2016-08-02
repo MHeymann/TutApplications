@@ -10,6 +10,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReadWriteLock;
 import packet.*;
 
+/*
+ * Author: Murray Heymann
+ *
+ * This class runs a thread that listen's for incoming connections and incoming
+ * messages to be relayed. 
+ *
+ * “Such a blunder/ Sometimes it makes me wonder/ why I even bring the thunder.”
+ * Cabinet Batle No.1, Hamilton
+ */
+
 public class ServerListener implements Runnable
 {
 	private int ports[];

@@ -5,9 +5,20 @@ import server.Users;
 import server.ServerListener;
 import server.ServerSpeaker;
 
-/**
+/*
+ * Author Murray Heymann
  *
- * @author Murray Heymann
+ * This is the class that starts up the server's threads for listening (a so
+ * called 'listener') for incoming data, processing it and possibly 
+ * relaying it to another user through the so called 'speaker' thread.
+ *
+ * "I dreamed I saw eleven stars, the sun the moon and sky
+ * Bowing down before my star it made me wonder why."
+ * Joseph and his amazing technicolour dreamcoat.
+ *
+ *
+ * "What is even an IDE?"
+ * --> Murray Heymann, or maybe someone else before me... how must I know
  */
 public class ChatServer {
 

@@ -6,6 +6,21 @@ import java.util.*;
 
 import packet.*;
 
+/*
+ * Author: Murray Heymann
+ *
+ * The Listener listens for incoming data from the server.  When it does come,
+ * it is received into a Packet object, then processed according to it's
+ * function code.  If necessary, data is displayed on the gui.  
+ *
+ * "Tens of thousands of people flood the streets
+ * There are screams and church bells ringing
+ * And as our fallen foes retreat
+ * I hear the drinking song they're singing...
+ *
+ * The world turned upside down!"
+ * Yorktown, Hamilton
+ */
 
 public class ClientListener implements Runnable {
 

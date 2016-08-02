@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client;
 
-/*
-import com.sun.corba.se.pept.encoding.InputObject;
-import java.io.BufferedReader;
-*/
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
@@ -17,9 +8,19 @@ import packet.*;
 import packet.Serializer;
 import java.util.Scanner;
 
-/**
+/*
+ * Author Murray Heymann
  *
- * @author 15988694
+ * This class runs a thread that sends data to the server over the 
+ * network.  
+ *
+ * "In my life
+ * She has burst like the music of angels
+ * The light of the sun
+ * And my life seems to stop
+ * As if something is over
+ * And something has scarcely begun."
+ * In My Life, Les Miserables
  */
 public class ClientSpeaker implements Runnable {
 	

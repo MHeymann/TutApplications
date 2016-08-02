@@ -11,9 +11,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
+/*
+ * Author Murray Heymann
  *
- * @author Murray Heymann
+ * This file is starts the client.  If it is started in gui mode, the swing
+ * components are created and managed from here.  Threads for incoming and
+ * outgoing data are created from here.  
+ *
+ * "LAFAYETTE!
+ * I'm taking this horse
+ * by the reins making
+ * Redcoats redder with bloodstains"
+ * Guns And Ships, Hamilton
  */
 public class ChatClient extends JFrame implements ActionListener {
 

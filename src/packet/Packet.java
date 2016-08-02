@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package packet;
 
 import java.io.Serializable;
@@ -11,9 +6,21 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-/**
+/*
+ * Author: Murray Heymann 
+ * 2016
  *
- * @author 15988694
+ * Packet is a data structure for sending data over a network.
+ *
+ * HAMILTON
+ * Where are you taking me?
+ *
+ * ANGELICA
+ * I'm about to change your life.
+ *
+ * HAMILTON
+ * Then by all means, lead the way.
+ * --> Helpless, Hamilton
  */
 
 public class Packet implements Serializable {

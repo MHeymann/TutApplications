@@ -6,6 +6,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/*
+ * This is some brief code, found on a stackexchange page.  It switches data
+ * between object formand byte array form.  Objects need to be made into 
+ * byte arrays if they are to be transmitted over a network.  
+ */
+
 public class Serializer {
 
     public static byte[] serialize(Object obj) throws IOException {
