@@ -136,6 +136,9 @@ public class Packet implements Serializable {
 		}
 
 		packetSize = buffer.getInt(0);
+		/*
+		System.out.printf("%d bytes\n", packetSize);
+		*/
 		if (packetSize <= 0) {
 			/* TODO 
 			 * this is currently handled as user going offline.  is this still
@@ -143,9 +146,6 @@ public class Packet implements Serializable {
 			 * */
 			return null;
 		}
-		/*
-		System.out.printf("%d bytes\n", packetSize);
-		*/
 		buffer = null;
 		buffer = ByteBuffer.allocate(packetSize);
 

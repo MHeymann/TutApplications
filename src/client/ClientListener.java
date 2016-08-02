@@ -26,15 +26,17 @@ public class ClientListener implements Runnable {
 
 	private SocketChannel socketChannel = null;
 	private ChatClient guiClient = null;
+	private String name = null;
 
 	public ClientListener(SocketChannel socketChannel) {
 		this.socketChannel = socketChannel;
 		this.guiClient = null;
 	}
 
-	public ClientListener(SocketChannel socketChannel, ChatClient guiClient) {
+	public ClientListener(SocketChannel socketChannel, ChatClient guiClient, String name) {
 		this.socketChannel = socketChannel;
 		this.guiClient = guiClient;
+		this.name = name;
 	}
 
 	public void run() 
@@ -104,7 +106,11 @@ public class ClientListener implements Runnable {
 						output = String.format("YOU echoed: %s\n", packet.data);
 						outputString(output);
 					} else if (packet.code == Code.BROADCAST) {
-						output = String.format("%s Broadcast: %s\n", packet.name, packet.data);
+						if (packet.name.equals(this.name)) {
+							output = String.format("YOU Broadcast: %s\n", packet.data);
+						} else {
+							output = String.format("%s Broadcast: %s\n", packet.name, packet.data);
+						}
 						outputString(output);
 					} else if (packet.code == Code.GET_ULIST) {
 						if (guiClient != null) {

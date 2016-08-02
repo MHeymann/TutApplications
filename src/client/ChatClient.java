@@ -35,7 +35,8 @@ public class ChatClient extends JFrame implements ActionListener {
 	/* For entering the ip and port number */
 	private JTextField tfServerIP = null, tfPortNo = null;
 	/* Buttons for actions to be performed */
-	private JButton login = null, logout = null, whosThere = null; 
+	private JButton login = null, logout = null, whosThere = null, 
+			echo = null, broadcast = null; 
 	/* For displaying messages */
 	private JTextArea taMessages = null, taUsers = null;
 	/* current connection status */
@@ -108,10 +109,18 @@ public class ChatClient extends JFrame implements ActionListener {
 		whosThere = new JButton("Who is in?");
 		whosThere.addActionListener(this);
 		whosThere.setEnabled(false);
+		echo = new JButton("Echo");
+		echo.addActionListener(this);
+		echo.setEnabled(false);
+		broadcast = new JButton("Broadcast");
+		broadcast.addActionListener(this);
+		broadcast.setEnabled(false);
 
 		southPanel.add(login);
 		southPanel.add(logout);
 		southPanel.add(whosThere);
+		southPanel.add(echo);
+		southPanel.add(broadcast);
 
 		this.add(southPanel, BorderLayout.SOUTH);
 
@@ -150,6 +159,8 @@ public class ChatClient extends JFrame implements ActionListener {
 		login.setEnabled(true);
 		logout.setEnabled(false);
 		whosThere.setEnabled(false);
+		echo.setEnabled(false);
+		broadcast.setEnabled(false);
 		label.setText("Enter your Username and password below");
 		tfName.setText("name");
 		tfData.setText("password");
@@ -174,6 +185,28 @@ public class ChatClient extends JFrame implements ActionListener {
 			return;
 		} else if (o == whosThere) {
 			speaker.getOnlineNames();
+			return;
+		} else if (o == echo) {
+			String mtext = tfData.getText();
+			if (speaker.echoString(mtext)) {
+			} else {
+				this.append("Some error echoing message\n");
+			}
+			
+			tfName.setText("");
+			tfData.setText("");
+
+			return;
+		} else if (o == broadcast) {
+			String mtext = tfData.getText();
+			if (speaker.broadcastString(mtext)) {
+			} else {
+				this.append("Some error broadcasting message\n");
+			}
+
+			tfName.setText("");
+			tfData.setText("");
+			
 			return;
 		}
 
@@ -233,18 +266,20 @@ public class ChatClient extends JFrame implements ActionListener {
 				return;
 			}
 
-			this.listener = new ClientListener(this.speaker.getSocketChannel(), this);
+			this.listener = new ClientListener(this.speaker.getSocketChannel(), this, username);
 			Thread thread = new Thread(listener);
 			thread.start();
 
 			tfData.setText("");
 			tfName.setText("");
-			label.setText("Enter recepient and message");
+			label.setText("Enter recipient and message");
 			connected = true;
 
 			login.setEnabled(false);
 			logout.setEnabled(true);
 			whosThere.setEnabled(true);
+			echo.setEnabled(true);
+			broadcast.setEnabled(true);
 			tfServerIP.setEditable(false);
 			tfPortNo.setEditable(false);
 			tfName.addActionListener(this);
@@ -278,7 +313,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		ClientListener listener = null;
 		Scanner scanner = new Scanner(System.in);
 		
-		if ((args.length == 1) && args[0].equals("terminal")) {
+		if ((args.length >= 1) && args[0].equals("terminal")) {
 
 			System.out.printf("Please enter your username: ");
 			name = scanner.nextLine();

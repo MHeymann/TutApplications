@@ -86,6 +86,17 @@ public class ClientSpeaker implements Runnable {
 		return this.sendPacket(packet);
 	}
 
+
+	public boolean echoString(String s) {
+		Packet packet = new Packet(Code.ECHO, this.name, s, null);
+		return this.sendPacket(packet);
+	}
+
+	public boolean broadcastString(String s) {
+		Packet packet = new Packet(Code.BROADCAST, this.name, s, null);
+		return this.sendPacket(packet);
+	}
+
 	public boolean sendPacket(Packet packet)
 	{
 		try {
@@ -200,6 +211,8 @@ public class ClientSpeaker implements Runnable {
 			packet = null;
 			if (line.equals("quit") || line.equals("exit")) {
 				break;
+			} else if (line.equals("getlist")) {
+				this.getOnlineNames();
 			} else if (line.equals("send")) {
 				System.out.printf("[recipient] > ");
 				to = scanner.nextLine();
