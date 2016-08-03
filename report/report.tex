@@ -1,0 +1,169 @@
+\title{RW354 Project 1: Client-Server Chat Program}
+\author{
+        Murray Heymann \\
+        15988694\\
+                Department of Computer Science\\
+        Stellenbosch University\\
+}
+\date{3 August 2016}
+
+\documentclass[12pt]{article}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is the report for the first project of RW354 in 2016. It will cover a
+project description, a discussion of features implemented in the solution, 
+a description of the data structures used in the implementation and finally
+tests performed on the program.  
+\end{abstract}
+
+\section{Project Description}
+
+\paragraph{}
+We were required to write a chat program using the client-server model, to learn
+more of practical computer networks and the problems faced in the implementation
+of such a system. Any language could be used, but as java was recommended, java
+NIO was used. Two applications were developed:  a server and a client.  The
+server is run from a terminal, whereas the client can be run either using a
+terminal, or with a graphical user interface.  
+
+\paragrapth{running}
+Please see the README file on how to compile and run.  In short, the
+shell scripts makeclient.sh, makeserver.sh, startclient.sh and startserver.sh
+found in the src directory will do everything that is necessary to compile and run the project.
+
+\section{Features Included}
+
+\paragraph{Server}
+The server runs two basic threads:  one for listening for incoming messages and
+new incoming connections.  Java NIO allows for multiple connections to be
+managed by a single thread and as starting up threads can become inefficient,
+this was chosen as the preferred interface. Multiple clients can connect, as
+long as each sends a unique username.  The other thread is responsible for
+sending info to connected users. Basic actions are printed by the server
+to the standard output, such as when a new user connects or disconnects and
+communication being sent out to all users.  If another user tries to connect
+with a username that is already online, he or she is refused.  When a user comes
+online or goes offline, a list of users online are pushed to each user
+remaining. The server should not crash,
+regardless of whether the user closes the chat window, terminates the java
+machine from the terminal or even force quits the terminal window.  It should
+also be stable if the connection is broken.  The program was not tested for if
+the client computer itself is force shutdown, as I love my computer and wasn't going to
+risk it. In theory, the server should be able to handle that as well.
+
+\paragraph{Client}
+The client has a simple graphical user interface (GUI), although it can also be run in
+"terminal" mode by providing this as an argument upon starting the client.  The
+java swing code used for creating this graphical user interface is closely based
+on code found on the site
+"dream.in.code\footnote{http://www.dreamincode.net/forums/topic/259777-a-simple-chat-program-with-clientserver-gui-optional/}". 
+Although the code was adapted, it very closely resembles code on this page and
+credit is therefore given, as it is due.  
+Upon startup, the GUI has two text areas where the server IP address and port
+number can be entered, and two text areas for the name and password of the user.
+Only the login button is active initially.  Logging in disables the login button
+and activates the buttons for logging out, requesting a list of online users
+(although this gets pushed by the server anyway), echoing a message back and
+broadcasting a message to all users.  The text areas for the server IP address
+and port number becomes uneditable.  A label now indicates that the other text
+areas are now to be used for the name of the recipient and for entering the
+message.  Buttons are provided for refreshing the list of users, for echoing a
+message to oneself and for broadcasting to all users currently online.  If a
+message entered is simply followed by an enter, a normal message is sent to the
+recipient indicated as a private (whispered) message.  Messages are displayed in
+a dedicated message area, with online users on a separate user area.
+
+\section{Features Not Included}
+
+\paragraph{Server}
+Although the server does receive the password, and even has a method for
+implementing password correctness, this method currently always always returns
+true.  There is no database maintaining a lookup table of users and their
+passwords; any user can connect using any username.  They will be accepted, as
+long as not other user is currently logged on using the same username. The
+server is designed to be able to have such methods and data structures
+implemented, but this was never implemented as it wasn't required in the
+project specifications and time ran out. 
+There is currently no method for sending delivery reports.
+
+\paragraph{Client}
+Currently all messages are shown in the same message area;  details are given
+regarding the messages that are sent and received:  sent messages are shown,
+with a label indicating whom it was sent to, received messages show whom they
+are from. But send time and time of receipt are discarded. I would have liked to
+have had separate message tabs for different conversations, but this would have
+required significant expansion of the message protocol I made up, with time
+constraints not allowing it. Finally, when logging out, and back in, a new
+listening thread is started for the client, without killing the old one.  This
+has no visible effect, but means repeated logging in and out will eventually
+bloat the resource usage.  
+
+\section{Extra Features}
+\paragraph{}
+
+A few interesting features was added to the gui, such as clearing the text areas
+upon gaining focus.  Echo messages was a fun extra feature.  
+
+
+\section{Algorithms and data structures}
+
+\paragraph{Messages}
+All messages and communication between server and client happen using a
+dedicated object called a Packet.  It has an integer field
+called 'code' that determine what it is for.  The meaning of the code is defined
+in the class called Code.java in the package called packet.  Currently it allows for
+sending a message, echoing back, broadcasting, logging in, logging off and
+requesting a list of online users. The codes are used by the server to correctly
+determine where to process and send the packet and by the client to know whether
+to display the data carried by the packet or how to react to it. A packet is
+converted into a byte array using the methods in Serialize.java that was found
+on a 'stackoverflow'
+blog\footnote{http://stackoverflow.com/questions/2836646/java-serializable-object-to-byte-array}.
+
+\paragraph{Server}
+The thread for sending messages has a ConcurrentLinkedQueue of Packets.  This
+structure was chosen, as it is thread safe.  Packets are popped of the front and
+sent to the required recipients.  Packets coming into the server, are processed
+by the so called 'listening' thread and put onto the ConcurrentLinkedQueue, if
+appropriate.  A class, called User.java is dedicated toward maintaining a list
+of online users.  It has two HashMaps, both with usernames and SocketChannels of
+online users.  The one uses usernames as key, the other uses SocketChannels as
+key.  This allows for using SocketChannels to find out which user went offline
+unexpectedly, and also using username for looking up the SocketChannel of a user
+to whom a message must be sent. 
+
+\section{Tests Performed}
+
+\paragraph{}
+Multiple instances of the client program was created and connected to the
+server.  Messages were sent between individual clients, broadcast and echoed.
+Furthermore, clients were closed by closing the GUI window, by stopping it from
+the terminal that started it using <ctrl-c> and by forcefully closing the terminal
+window.  The server remained stable with each action, and could figure out which
+user went offline, remove them from the appropriate data structures and send an
+updated user list to the users still online.
+When the server goes offline, the clients show this as a message on the
+user board.  This does require the user to log off and back on when the server is
+back up.  
+
+\end{document}
+This is never printed
+
+\newpage
+
+
+\paragraph{Answer}
+\begin{verbatim}
+   1 void adding_column_values(int** A, int m, int n, int* x) {
+   2     int i, j;
+   3     for(i = 0; i < m; i++) {
+   4         for(j = 0; j < n; j++)
+   5             x[j] += A[i][j];
+   6     }
+   7 }
+\end{verbatim}
+
+

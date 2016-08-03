@@ -32,6 +32,9 @@ public class ChatClient extends JFrame implements ActionListener {
 	/* text field for entering username and messages */
 	private JTextField tfName = null;
 	private JTextField tfData = null;
+
+	private FocusListener flnLogin;
+	private FocusListener fldLogin, fldConnect;
 	/* For entering the ip and port number */
 	private JTextField tfServerIP = null, tfPortNo = null;
 	/* Buttons for actions to be performed */
@@ -77,8 +80,49 @@ public class ChatClient extends JFrame implements ActionListener {
 		/* The label and text field for communication */
 		label = new JLabel("Enter your Username:", SwingConstants.CENTER);
 		northPanel.add(label);
-		tfName = new JTextField("name");
+		tfName = new JTextField("Name");
 		tfData = new JTextField("Password");
+
+		flnLogin = new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				if (tfName.getText().equals("Name")) {
+					tfName.setText("");
+				}
+			}
+			public void focusLost(FocusEvent e) {
+				if (tfName.getText().equals("")) {
+					tfName.setText("Name");
+				}
+			}
+		};
+		fldLogin = new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				if (tfData.getText().equals("Password")) {
+					tfData.setText("");
+				}
+			}
+			public void focusLost(FocusEvent e) {
+				if (tfData.getText().equals("")) {
+					tfData.setText("Password");
+				}
+			}
+		};
+
+		fldConnect = new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				if (tfData.getText().equals("Message")) {
+					tfData.setText("");
+				}
+			}
+			public void focusLost(FocusEvent e) {
+				if (tfData.getText().equals("")) {
+					tfData.setText("Message");
+				}
+			}
+		};
+
+		tfName.addFocusListener(flnLogin);
+		tfData.addFocusListener(fldLogin);
 		tfName.setBackground(Color.WHITE);
 		tfData.setBackground(Color.WHITE);
 		northPanel.add(tfName);
@@ -162,8 +206,10 @@ public class ChatClient extends JFrame implements ActionListener {
 		echo.setEnabled(false);
 		broadcast.setEnabled(false);
 		label.setText("Enter your Username and password below");
-		tfName.setText("name");
-		tfData.setText("password");
+		tfName.setText("Name");
+		tfData.setText("Password");
+		tfData.removeFocusListener(fldConnect);
+		tfData.addFocusListener(fldLogin);
 		tfPortNo.setText("" + this.portNo);
 		tfServerIP.setText(this.hostAddress);
 		tfServerIP.setEditable(true);
@@ -223,8 +269,8 @@ public class ChatClient extends JFrame implements ActionListener {
 					this.append("Some error sending message\n");
 				}
 				
-				tfName.setText("");
-				tfData.setText("");
+				tfName.setText("Name");
+				tfData.setText("Message");
 			}
 			return;
 		}
@@ -270,9 +316,11 @@ public class ChatClient extends JFrame implements ActionListener {
 			Thread thread = new Thread(listener);
 			thread.start();
 
-			tfData.setText("");
-			tfName.setText("");
-			label.setText("Enter recipient and message");
+			tfData.setText("Message");
+			tfData.removeFocusListener(fldLogin);
+			tfData.addFocusListener(fldConnect);
+			tfName.setText("Name");
+			label.setText("Enter recipient and message, followed by <enter>, or choose an alternative action from the buttons below.");
 			connected = true;
 
 			login.setEnabled(false);
