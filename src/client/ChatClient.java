@@ -171,6 +171,11 @@ public class ChatClient extends JFrame implements ActionListener {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(800, 600);
 		this.setVisible(true);
+
+
+		tfName.addActionListener(this);
+		tfData.addActionListener(this);
+
 		tfName.requestFocus();
 	}
 
@@ -214,8 +219,10 @@ public class ChatClient extends JFrame implements ActionListener {
 		tfServerIP.setText(this.hostAddress);
 		tfServerIP.setEditable(true);
 		tfPortNo.setEditable(true);
+		/*
 		tfName.removeActionListener(this);
 		tfData.removeActionListener(this);
+		*/
 		connected = false;
 		taMessages.setText("");
 		taUsers.setText("");
@@ -256,26 +263,26 @@ public class ChatClient extends JFrame implements ActionListener {
 			return;
 		}
 
+		if (o == tfName) {
+			tfData.requestFocus();
+			return;
+		}
 		if (connected) {
 			/* sending message */
-			if (o == tfName) {
-				tfData.requestFocus();
+			String mtext = tfData.getText();
+			String rname = tfName.getText();
+			if (speaker.sendString(mtext, rname)) {
+				this.append(this.myName + " to " + rname + ": " + mtext + "\n");
 			} else {
-				String mtext = tfData.getText();
-				String rname = tfName.getText();
-				if (speaker.sendString(mtext, rname)) {
-					this.append(this.myName + " to " + rname + ": " + mtext + "\n");
-				} else {
-					this.append("Some error sending message\n");
-				}
-				
-				tfName.setText("Name");
-				tfData.setText("Message");
+				this.append("Some error sending message\n");
 			}
+				
+			tfName.setText("Name");
+			tfData.setText("Message");
 			return;
 		}
 
-		if (o == login) {
+		if ((o == login) || (o == tfData)) {
 			String username = tfName.getText().trim();
 			if (username.length() == 0) {
 				return;
@@ -330,8 +337,10 @@ public class ChatClient extends JFrame implements ActionListener {
 			broadcast.setEnabled(true);
 			tfServerIP.setEditable(false);
 			tfPortNo.setEditable(false);
+			/*
 			tfName.addActionListener(this);
 			tfData.addActionListener(this);
+			*/
 
 			this.setTitle(this.getTitle() + " - " + this.myName);
 
