@@ -109,7 +109,7 @@ public class ServerListener implements Runnable
 			key = null;
 			key = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-			System.out.println( "Going to listen on " + ports[i] );
+			System.out.printf( "Going to listen on %d\n", ports[i] );
 		}
 
 		while (this.running()) {
@@ -142,7 +142,7 @@ public class ServerListener implements Runnable
 					newKey = sc.register(selector, SelectionKey.OP_READ);
 					it.remove();
 
-					System.out.println("Got connection from "+sc);
+					System.out.printf("Got connection from %s\n", sc.toString());
 				} else if ((key.readyOps() & SelectionKey.OP_READ)
 						== SelectionKey.OP_READ) {
 					/* Read the data */
@@ -202,7 +202,7 @@ public class ServerListener implements Runnable
 		Thread thread = null;
 		Users users = null;
 		if (args.length <= 0) {
-			System.err.println("Usage: java ServerListener port [port port ...]");
+			System.err.printf("Usage: java ServerListener port [port port ...]\n");
 			System.exit(1);
 		}
 

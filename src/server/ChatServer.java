@@ -38,7 +38,7 @@ public class ChatServer {
 		ports = new int[1];
 		ports[0] = 8002;
 
-		System.out.println("Starting up server");
+		System.out.printf("Starting up server\n");
 		users = new Users();
 		speaker = new ServerSpeaker(users);
 		listener = new ServerListener(ports, users, speaker);
@@ -48,21 +48,20 @@ public class ChatServer {
 		speakThread = new Thread(speaker);
 		speakThread.start();
 
-		System.out.println("Server running");
+		System.out.printf("Server running\n");
 
 		while(true) {
 			line = scanner.nextLine();
 			if (line.equals("quit")) {
 				break;
 			} else if (line.equals("check")) {
-				System.out.println("Server running");
+				System.out.printf("Server running\n");
 			} else {
 			}
 		}
 
 		scanner.close();
 		listener.kill();
-		System.out.println("I'm Here");
 		System.exit(0);
 	
     }

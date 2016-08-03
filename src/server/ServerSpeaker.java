@@ -34,7 +34,6 @@ public class ServerSpeaker implements Runnable {
 			packet = null;
 			packet = new Packet(Code.GET_ULIST, to, null, to);
 			packet.setUserList(names);
-			System.out.printf("sending list to %s\n", to);
 			this.addPacketToQueue(packet);
 		}
 	}
@@ -44,7 +43,8 @@ public class ServerSpeaker implements Runnable {
 		Set<String> names = null;
 
 		names = users.getNames();
-		System.out.printf("Broadcasting\n");
+
+		System.out.printf("%s is broadcasting %s\n", packet.name, packet.data);
 		for(String to: names) {
 			System.out.printf("%s to be added for broadcasting\n", to);
 			copy = null;
@@ -63,7 +63,6 @@ public class ServerSpeaker implements Runnable {
 		Set<String> onlineUsers = null;
 		while(true) {
 			try {
-				System.out.println("acquiring sem");
 				this.sem.acquire();
 			} catch (InterruptedException e) {
 				System.out.printf("Speaker interrupted\n");

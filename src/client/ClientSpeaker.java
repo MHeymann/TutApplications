@@ -8,6 +8,8 @@ import packet.*;
 import packet.Serializer;
 import java.util.Scanner;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 /*
  * Author Murray Heymann
  *
@@ -127,6 +129,7 @@ public class ClientSpeaker implements Runnable {
 		Selector selector = null;
 
 		if (!this.connect()) {
+			showMessageDialog(null, "Failed to connect to server");
 			System.err.printf("Failed to connect.  Couldn't login\n");
 			return false;
 		}

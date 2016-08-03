@@ -3,6 +3,7 @@ package client;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 import packet.*;
 
@@ -98,6 +99,10 @@ public class ClientListener implements Runnable {
 						/* server is offline */
 						output = String.format("Server went offline\n");
 						outputString(output);
+						if (this.guiClient != null) {
+							showMessageDialog(null, "Server went offline");
+							this.guiClient.brokenConnection();
+						}
 						sc.close();
 					} else if (packet.code == Code.SEND) {
 						output = String.format("%s: %s\n", packet.name, packet.data);
