@@ -152,7 +152,6 @@ public class ServerListener implements Runnable
 					System.out.printf("Receiving packet\n");
 					packet = Packet.receivePacket(sc);
 					System.out.printf("Received packet\n");
-					System.out.println("" + packet.code);
 					
 
 					/* Process data */
