@@ -312,12 +312,15 @@ public class ChatClient extends JFrame implements ActionListener {
 			
 			System.out.printf("lets create a speaker\n");
 			this.speaker = new ClientSpeaker(username, server, port, true);
+			System.out.printf("created a speaker\n");
 			this.myName = username;
 			/* open connection if possible */
 
+			System.out.printf("logging in\n");
 			if (!this.speaker.login(password)) {
 				return;
 			}
+			System.out.printf("logged in\n");
 
 			this.listener = new ClientListener(this.speaker.getSocketChannel(), this, username);
 			Thread thread = new Thread(listener);

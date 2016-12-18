@@ -128,18 +128,13 @@ public class ClientSpeaker implements Runnable {
 		Packet packet = null;
 		Selector selector = null;
 
+		System.out.printf("Connecting\n");
 		if (!this.connect()) {
 			showMessageDialog(null, "Failed to connect to server");
 			System.err.printf("Failed to connect.  Couldn't login\n");
 			return false;
 		}
-
-		packet = new Packet(Code.LOGIN, this.name, password, null);
-
-		if(!this.sendPacket(packet)) {
-			System.out.println("Failed to send login details");
-			return false;
-		}
+		System.out.printf("Connected\n");
 
 		try {
 			selector = Selector.open();
@@ -151,14 +146,28 @@ public class ClientSpeaker implements Runnable {
 		} catch (Exception e) {
 		}
 
+		packet = new Packet(Code.LOGIN, this.name, password, null);
+
+		System.out.printf("Sending log in packet\n");
+		if(!this.sendPacket(packet)) {
+			System.out.println("Failed to send login details");
+			return false;
+		}
+		System.out.printf("Sent packet\n");
+
+
+
+		System.out.printf("awaiting response\n");
 		try {
 			selector.select();
 		} catch (Exception e) {
 		}
+		System.out.printf("getting response\n");
 		try {
 			packet = Packet.receivePacket(this.socketChannel);
 		} catch (Exception e) {
 		}
+		System.out.printf("received response\n");
 
 		if (packet == null) {
 			return false;

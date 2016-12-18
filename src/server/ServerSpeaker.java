@@ -81,6 +81,8 @@ public class ServerSpeaker implements Runnable {
 				if (packet.to == null) {
 					/* only when an individual asked, not when being broadcast */
 					packet.to = packet.name;
+				} else {
+					System.out.println(packet.to + " " + packet.to.length());
 				}
 				packet.name = null;
 				System.out.printf("Sending list of online users to %s\n", packet.to);

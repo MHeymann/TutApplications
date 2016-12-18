@@ -32,6 +32,13 @@ public class Packet implements Serializable {
 	public Set<String> users;
 
     
+	public Packet() {
+		this.code = -1;
+		this.name = null;
+		this.data = null;
+		this.to = null;
+		this.users = null;
+	}
     public Packet(int code, String name, String data, String to) {
 		this.code = code;
 		this.name = name;
@@ -148,9 +155,11 @@ public class Packet implements Serializable {
 		}
 		buffer = null;
 		buffer = ByteBuffer.allocate(packetSize);
+		System.out.printf("packet is %d bytes\n", packetSize);
 
 		r = -1;
 		r = socketChannel.read(buffer);
+		System.out.printf("%d read\n", r);
 		if (r == 0) {
 			return null;
 		}

@@ -149,7 +149,11 @@ public class ServerListener implements Runnable
 					sc = null;
 					sc = (SocketChannel)key.channel();
 					packet = null;
+					System.out.printf("Receiving packet\n");
 					packet = Packet.receivePacket(sc);
+					System.out.printf("Received packet\n");
+					System.out.println("" + packet.code);
+					
 
 					/* Process data */
 					if (packet == null) {
