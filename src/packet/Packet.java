@@ -157,17 +157,23 @@ public class Packet implements Serializable {
 		buffer = ByteBuffer.allocate(packetSize);
 		System.out.printf("packet is %d bytes\n", packetSize);
 
-		r = -1;
-		r = socketChannel.read(buffer);
-		System.out.printf("%d read\n", r);
-		if (r == 0) {
-			return null;
-		}
-		if (r == -1) {
-			socketChannel.close();
-			socketChannel = null;
-			return null;
-		}
+		int cumSize = 0;;
+		do {
+			r = -1;
+			r = socketChannel.read(buffer);
+			/*
+			if (r == 0) {
+				return null;
+			}
+			*/
+			if (r == -1) {
+				socketChannel.close();
+				socketChannel = null;
+				return null;
+			}
+			cumSize += r;
+		} while (cumSize < packetSize);
+		System.out.printf("%d read\n", cumSize);
 		byteArr = buffer.array();
 
         packet = (Packet)Serializer.deserialize(byteArr);;
