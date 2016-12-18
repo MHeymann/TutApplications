@@ -179,10 +179,10 @@ public class ServerListener implements Runnable
 						String s;
 						if (this.checkUserPassword(packet.name, packet.data) && 
 								this.users.addConnection(packet.name, sc)) {
-							speaker.pushUserList();
 							s = "accept";
 							p = new Packet(Code.SEND, "admin", s, packet.name);
 							Packet.sendPacket(p, sc);
+							speaker.pushUserList();
 						} else {
 							s = "denial";
 							p = new Packet(Code.SEND, "admin", s, packet.name);
