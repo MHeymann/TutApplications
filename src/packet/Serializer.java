@@ -108,7 +108,6 @@ public class Serializer {
 			for (String s: packet.users) {
 				bb.putInt(s.length());
 				for (i = 0; i < s.length(); i++) {
-					System.out.println("i = " + i + " of " + s);
 					bb.putChar(s.charAt(i));
 				}
 			}
