@@ -175,16 +175,13 @@ public class ServerListener implements Runnable
 						this.speaker.broadcast(packet);
 					} else if (packet.code == Code.LOGIN) {
 						Packet p;
-						String s;
 						if (this.checkUserPassword(packet.name, packet.data) && 
 								this.users.addConnection(packet.name, sc)) {
-							s = "accept";
-							p = new Packet(Code.SEND, "admin", s, packet.name);
+							p = new Packet(Code.LOGIN, "admin", "accept", packet.name);
 							Packet.sendPacket(p, sc);
 							speaker.pushUserList();
 						} else {
-							s = "denial";
-							p = new Packet(Code.SEND, "admin", s, packet.name);
+							p = new Packet(Code.LOGIN, "admin", "denial", packet.name);
 							Packet.sendPacket(p, sc);
 							sc.close();
 						}

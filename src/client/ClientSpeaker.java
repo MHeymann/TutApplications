@@ -158,21 +158,27 @@ public class ClientSpeaker implements Runnable {
 
 
 		System.out.printf("awaiting response\n");
-		try {
-			selector.select();
-		} catch (Exception e) {
-		}
-		System.out.printf("getting response\n");
-		try {
-			packet = Packet.receivePacket(this.socketChannel);
-		} catch (Exception e) {
-		}
-		System.out.printf("received response\n");
+		do {
+			try {
+				selector.select();
+			} catch (Exception e) {
+			}
+			System.out.printf("getting response\n");
+			try {
+				packet = Packet.receivePacket(this.socketChannel);
+			} catch (Exception e) {
+			}
+			System.out.printf("received response\n");
 
-		if (packet == null) {
-			System.err.printf("No packet received while awaiting login info\n");
-			return false;
-		}
+			if (packet == null) {
+				System.err.printf(
+						"No packet received while awaiting login info, ClientSpeaker.c\n");
+				return false;
+			}
+
+			
+		} while (packet.code != Code.LOGIN);
+
 		if (packet.data == null) {
 			System.err.printf("No data received\n");
 			return false;

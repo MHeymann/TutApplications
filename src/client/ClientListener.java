@@ -97,10 +97,10 @@ public class ClientListener implements Runnable {
 					/* Process data */
 					if (packet == null) {
 						/* server is offline */
-						output = String.format("Server went offline\n");
+						output = String.format("Connection with server broken\n");
 						outputString(output);
 						if (this.guiClient != null) {
-							showMessageDialog(null, "Server went offline");
+							showMessageDialog(null, "Connection with server broken.");
 							this.guiClient.brokenConnection();
 						}
 						sc.close();
