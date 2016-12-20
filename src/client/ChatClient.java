@@ -310,13 +310,10 @@ public class ChatClient extends JFrame implements ActionListener {
 				return;
 			}
 			
-			System.out.printf("lets create a speaker\n");
 			this.speaker = new ClientSpeaker(username, server, port, true);
-			System.out.printf("created a speaker\n");
 			this.myName = username;
 			/* open connection if possible */
 
-			System.out.printf("logging in\n");
 			if (!this.speaker.login(password)) {
 				return;
 			}

@@ -153,22 +153,17 @@ public class ClientSpeaker implements Runnable {
 			System.out.println("Failed to send login details");
 			return false;
 		}
-		System.out.printf("Sent packet\n");
 
 
-
-		System.out.printf("awaiting response\n");
 		do {
 			try {
 				selector.select();
 			} catch (Exception e) {
 			}
-			System.out.printf("getting response\n");
 			try {
 				packet = Packet.receivePacket(this.socketChannel);
 			} catch (Exception e) {
 			}
-			System.out.printf("received response\n");
 
 			if (packet == null) {
 				System.err.printf(
@@ -198,7 +193,7 @@ public class ClientSpeaker implements Runnable {
 		Packet packet = null;
 		packet = new Packet(Code.QUIT, this.name, null, null);
 		if(!this.sendPacket(packet)) {
-			System.out.println("Failed to send Offline signal");
+			System.err.println("Failed to send Offline signal");
 			return false;
 		}
 		return true;

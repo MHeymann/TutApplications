@@ -187,19 +187,16 @@ public class Serializer {
 		ByteBuffer bb = ByteBuffer.wrap(bytes);
 
 		packet.code = bb.getInt();
-		System.out.printf("code: %d\n", packet.code);
 
 		len = bb.getInt();
 		if (len == 0) {
 			packet.name = null;
 		} else {
-			System.out.printf("%d\n", len);
 			sb = new StringBuilder(len);
 			for (i = 0; i < len; i++) {
 				sb.append(bb.getChar());
 			}
 			packet.name = sb.toString();
-			System.out.printf("packet name: %s\n", packet.name);
 			sb = null;
 		}
 

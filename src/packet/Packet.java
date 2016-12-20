@@ -122,7 +122,7 @@ public class Packet implements Serializable {
 		try {
 			r = socketChannel.read(buffer);
 		} catch (IOException e) {
-			System.out.printf("io exceoption, user probably went offline in a rogue fassion\n");
+			System.err.printf("io exceoption, user probably went offline in a rogue fassion\n");
 			e.printStackTrace();
 		}
 		if (r == 0) {
@@ -155,7 +155,6 @@ public class Packet implements Serializable {
 		}
 		buffer = null;
 		buffer = ByteBuffer.allocate(packetSize);
-		System.out.printf("packet is %d bytes\n", packetSize);
 
 		int cumSize = 0;;
 		do {
@@ -173,7 +172,6 @@ public class Packet implements Serializable {
 			}
 			cumSize += r;
 		} while (cumSize < packetSize);
-		System.out.printf("%d read\n", cumSize);
 		byteArr = buffer.array();
 
         packet = (Packet)Serializer.deserialize(byteArr);;
