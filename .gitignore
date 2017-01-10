@@ -44,3 +44,8 @@
 *.pdf
 nio/*
 *.swp
+/bin/
+
+.classpath
+.project
+.settings
