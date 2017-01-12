@@ -1,8 +1,6 @@
 package chat.server;
 
 import java.io.*;
-import java.net.*;
-import java.nio.*;
 import java.util.*;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;

@@ -2,7 +2,6 @@ package chat.server;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.Iterator;
 import java.util.*;
 
 import chat.packet.Packet;

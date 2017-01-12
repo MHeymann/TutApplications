@@ -15,8 +15,8 @@ import java.util.HashSet;
  */
 
 public class Serializer {
-	private final int lower_bytes =  1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256;
-	private final int upper_bytes = lower_bytes << 8;
+	//private final int lower_bytes =  1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256;
+	//private final int upper_bytes = lower_bytes << 8;
 
     public static byte[] serialize(Packet packet) throws IOException {
 		int size = 0;
@@ -171,15 +171,9 @@ public class Serializer {
     }
 
     public static Packet deserialize(byte[] bytes) {
-		int code;
 		int len;
 		int i, j;
 		int userCount;
-		/*
-		String name;
-		String data;
-		String to;
-		*/
 		HashSet<String> users;
 		
 		StringBuilder sb;

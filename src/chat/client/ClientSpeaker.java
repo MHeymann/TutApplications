@@ -1,12 +1,9 @@
 package chat.client;
 
 import java.io.*;
-import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
 import chat.packet.*;
-//import chat.packet.Serializer;
-//import chat.packet.Packet;
 import java.util.Scanner;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -217,8 +214,6 @@ public class ClientSpeaker implements Runnable {
 		String line = null;
 		String to = null;
 		Scanner scanner = new Scanner(System.in);
-		byte[] bytes = null;
-		ByteBuffer buffer = null;
 
 		System.out.printf("> ");
 		while (scanner.hasNextLine()) {

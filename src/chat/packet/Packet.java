@@ -28,7 +28,11 @@ import java.security.MessageDigest;
 
 public class Packet implements Serializable {
 
-    public int code;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	public int code;
 	public String name;
     public String data;
 	public String to;
@@ -139,7 +143,7 @@ public class Packet implements Serializable {
 
 		buffer = ByteBuffer.wrap(byteArray);
 
-		System.out.printf("Sending packet with hash %s\n", bytesToHex(hash));
+		System.out.printf("Send hash %s\n", bytesToHex(hash));
 		sizeBuffer.flip();
 		srcs[0] = sizeBuffer;
 		srcs[1] = hashBuffer;
@@ -167,7 +171,7 @@ public class Packet implements Serializable {
 			e.printStackTrace();
 		}
 		if (r == 0) {
-			/* TODO 
+			/*  
 			 * this is currently handled as user going offline.  is this still
 			 * valid?
 			 * */
@@ -188,7 +192,7 @@ public class Packet implements Serializable {
 		System.out.printf("%d bytes\n", packetSize);
 		*/
 		if (packetSize <= 0) {
-			/* TODO 
+			/*  
 			 * this is currently handled as user going offline.  is this still
 			 * valid?
 			 * */
@@ -233,7 +237,7 @@ public class Packet implements Serializable {
 		if (hashString.compareTo(bytesToHex(getSha256(byteArr))) != 0) {
 			System.out.printf("hash doesn't check out\n");
 		} else {
-			System.out.printf("hash checks out: %s\n", hashString);
+			System.out.printf("Recv hash %s\n", hashString);
 		}
 
         packet = (Packet)Serializer.deserialize(byteArr);

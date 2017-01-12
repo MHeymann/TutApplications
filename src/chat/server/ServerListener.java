@@ -1,9 +1,7 @@
 // $Id$
 package chat.server;
 
-import java.io.*;
 import java.net.*;
-import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -23,7 +21,6 @@ import chat.packet.*;
 public class ServerListener implements Runnable
 {
 	private int ports[];
-	private ByteBuffer echoBuffer = ByteBuffer.allocate( 1024 );
 	private boolean runningStatus = true;
 	private ReadWriteLock statusLock = null;
 	private Users users = null;
@@ -71,7 +68,6 @@ public class ServerListener implements Runnable
 	private void go() throws Exception
 	{
 		int i = 0;
-		int num = 0;
 		ServerSocketChannel serverSocketChannel = null;
 		Selector selector = null;
 		ServerSocket ss = null;
@@ -80,9 +76,7 @@ public class ServerListener implements Runnable
 		Set<SelectionKey> selectedKeys = null;
 		Iterator<SelectionKey> it = null;
 		SocketChannel sc = null;
-		SelectionKey newKey = null;
 		Packet packet = null;
-		String line = null;
 
 		if (this.users == null) {
 			System.err.printf("users not initialized]n");
@@ -113,7 +107,7 @@ public class ServerListener implements Runnable
 		}
 
 		while (this.running()) {
-			num = selector.select();
+			selector.select();
 
 			selectedKeys = null;
 			selectedKeys = selector.selectedKeys();
@@ -138,8 +132,7 @@ public class ServerListener implements Runnable
 					sc.configureBlocking(false);
 
 					/* Add the new connection to the selector */
-					newKey = null;
-					newKey = sc.register(selector, SelectionKey.OP_READ);
+					sc.register(selector, SelectionKey.OP_READ);
 					it.remove();
 
 					System.out.printf("Got connection from %s\n", sc.toString());

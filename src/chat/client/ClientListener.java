@@ -1,6 +1,5 @@
 package chat.client;
 
-import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -67,17 +66,15 @@ public class ClientListener implements Runnable {
 		SelectionKey key = null;
 		Set<SelectionKey> selectedKeys = null;
 		Iterator<SelectionKey> it = null;
-		SelectionKey newKey = null;
 		Packet packet = null;
-		int num = -1;
 		String output = null;
 
 
 		selector = Selector.open();
-		newKey = this.socketChannel.register(selector, SelectionKey.OP_READ);
+		this.socketChannel.register(selector, SelectionKey.OP_READ);
 		selector.select();
 		while (true) {
-			num = selector.select();
+			selector.select();
 
 			selectedKeys = null;
 			selectedKeys = selector.selectedKeys();

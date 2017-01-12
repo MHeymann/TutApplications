@@ -1,10 +1,8 @@
 package chat;
 
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Arrays;
 import chat.client.*;
-import chat.packet.*;
 import java.io.Console;
 
 import javax.swing.*;
@@ -361,6 +359,7 @@ public class ChatClient extends JFrame implements ActionListener {
 	}
 
     public static void main(String[] args)  {
+		@SuppressWarnings("unused")
 		ChatClient client = null;
 		String line = null;
 		String name = null;
@@ -368,12 +367,10 @@ public class ChatClient extends JFrame implements ActionListener {
 		Thread threadListen = null;
 		ClientSpeaker speaker = null;
 		ClientListener listener = null;
-		Scanner scanner = new Scanner(System.in);
 		
 		if ((args.length >= 1) && args[0].equals("terminal")) {
 
 			System.out.printf("Please enter your username: ");
-			name = scanner.nextLine();
 			speaker = new ClientSpeaker(name, "127.0.0.1", 8002, false);
 	
 			System.out.printf("Please provide the password for %s: ", name);
