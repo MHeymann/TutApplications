@@ -1,10 +1,10 @@
-package client;
+package chat;
 
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Arrays;
-import client.*;
-import packet.*;
+import chat.client.*;
+import chat.packet.*;
 import java.io.Console;
 
 import javax.swing.*;

@@ -1,11 +1,12 @@
-package client;
+package chat.client;
 
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-import packet.*;
+import chat.packet.*;
+import chat.ChatClient;
 
 /*
  * Author: Murray Heymann

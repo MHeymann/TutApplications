@@ -1,5 +1,5 @@
 // $Id$
-package server;
+package chat.server;
 
 import java.io.*;
 import java.net.*;
@@ -8,7 +8,7 @@ import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReadWriteLock;
-import packet.*;
+import chat.packet.*;
 
 /*
  * Author: Murray Heymann

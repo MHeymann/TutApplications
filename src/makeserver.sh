@@ -1,5 +1,6 @@
 #! /bin/bash
-rm -rv server/*.class
-rm -rv packet/*.class
-echo javac server/ChatServer.java
-javac server/ChatServer.java
+rm -rv chat/*.class
+rm -rv chat/server/*.class
+rm -rv chat/packet/*.class
+echo javac chat/ChatServer.java
+javac chat/ChatServer.java

@@ -1,10 +1,13 @@
-package packet;
+package chat.packet;
 
 import java.io.Serializable;
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
+import java.lang.StringBuilder;
+import javax.xml.bind.DatatypeConverter;
+import java.security.MessageDigest;
 
 /*
  * Author: Murray Heymann 
@@ -63,6 +66,20 @@ public class Packet implements Serializable {
 		}
 
     }
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();	
+
+		sb.append("packet:\n");
+		sb.append("\tCode: " + this.code + "\n");
+		sb.append("\tName: " + this.name + "\n");
+		sb.append("\tData: " + this.data + "\n");
+		sb.append("\tTo: " + this.to + "\n");
+		sb.append("\tUsers: " + this.users + "\n");
+		sb.append("packet end\n");
+
+		return sb.toString();
+	}
     
 	public void setUserList(Set<String> users) {
 		this.users = users;
@@ -84,13 +101,31 @@ public class Packet implements Serializable {
         this.data = data;
     }
 
+	private static String bytesToHex(byte[] hash) {
+		return DatatypeConverter.printHexBinary(hash);
+	}
+
+
+	private static byte[] getSha256(byte[] data) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			byte[] hash = digest.digest(data);
+			return hash;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void sendPacket(Packet packet, SocketChannel socketChannel) throws IOException 
 	{
 		int size;
 		ByteBuffer buffer = null;
 		ByteBuffer sizeBuffer = null;
-		ByteBuffer[] srcs = new ByteBuffer[2];
+		ByteBuffer hashBuffer = null;
+		ByteBuffer[] srcs = new ByteBuffer[3];
 		byte[] byteArray = null;
+		byte[] hash = null;
 		
 		byteArray = Serializer.serialize(packet);
 
@@ -99,11 +134,16 @@ public class Packet implements Serializable {
 		size = byteArray.length;
 		sizeBuffer.putInt(size);
 
+		hash = getSha256(byteArray);
+		hashBuffer = ByteBuffer.wrap(hash);
+
 		buffer = ByteBuffer.wrap(byteArray);
 
+		System.out.printf("Sending packet with hash %s\n", bytesToHex(hash));
 		sizeBuffer.flip();
 		srcs[0] = sizeBuffer;
-		srcs[1] = buffer;
+		srcs[1] = hashBuffer;
+		srcs[2] = buffer;
 		socketChannel.write(srcs);
 	}
 
@@ -113,6 +153,7 @@ public class Packet implements Serializable {
 		int packetSize = -1;
 		ByteBuffer buffer = null;
 		byte[] byteArr = null;
+		byte[] hash = null;
 		Packet packet = null;
 		
 		
@@ -153,18 +194,32 @@ public class Packet implements Serializable {
 			 * */
 			return null;
 		}
-		buffer = null;
-		buffer = ByteBuffer.allocate(packetSize);
 
-		int cumSize = 0;;
+
+		buffer = null;
+		buffer = ByteBuffer.allocate(32);
+
+		int cumSize = 0;
 		do {
 			r = -1;
 			r = socketChannel.read(buffer);
-			/*
-			if (r == 0) {
+			if (r == -1) {
+				socketChannel.close();
+				socketChannel = null;
 				return null;
 			}
-			*/
+			cumSize += r;
+		} while (cumSize < 32);
+		hash = buffer.array();
+
+
+		buffer = null;
+		buffer = ByteBuffer.allocate(packetSize);
+
+		cumSize = 0;
+		do {
+			r = -1;
+			r = socketChannel.read(buffer);
 			if (r == -1) {
 				socketChannel.close();
 				socketChannel = null;
@@ -174,7 +229,14 @@ public class Packet implements Serializable {
 		} while (cumSize < packetSize);
 		byteArr = buffer.array();
 
-        packet = (Packet)Serializer.deserialize(byteArr);;
+		String hashString = bytesToHex(hash);
+		if (hashString.compareTo(bytesToHex(getSha256(byteArr))) != 0) {
+			System.out.printf("hash doesn't check out\n");
+		} else {
+			System.out.printf("hash checks out: %s\n", hashString);
+		}
+
+        packet = (Packet)Serializer.deserialize(byteArr);
 		return packet;
 	}
 }

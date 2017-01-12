@@ -1,4 +1,4 @@
-package server;
+package chat.server;
 
 import java.io.*;
 import java.net.*;
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.nio.channels.*;
 
-import packet.Packet;
+import chat.packet.Packet;
 
 /*
  * author Murray Heymann

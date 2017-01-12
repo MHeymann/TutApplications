@@ -1,11 +1,12 @@
-package client;
+package chat.client;
 
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
-import packet.*;
-import packet.Serializer;
+import chat.packet.*;
+//import chat.packet.Serializer;
+//import chat.packet.Packet;
 import java.util.Scanner;
 
 import static javax.swing.JOptionPane.showMessageDialog;

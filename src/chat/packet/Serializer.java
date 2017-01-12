@@ -1,4 +1,4 @@
-package packet;
+package chat.packet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
