@@ -105,12 +105,12 @@ public class Packet implements Serializable {
         this.data = data;
     }
 
-	private static String bytesToHex(byte[] hash) {
+	public static String bytesToHex(byte[] hash) {
 		return DatatypeConverter.printHexBinary(hash);
 	}
 
 
-	private static byte[] getSha256(byte[] data) {
+	public static byte[] getSha256(byte[] data) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(data);
@@ -128,22 +128,32 @@ public class Packet implements Serializable {
 		ByteBuffer sizeBuffer = null;
 		ByteBuffer hashBuffer = null;
 		ByteBuffer[] srcs = new ByteBuffer[3];
-		byte[] byteArray = null;
+		byte[] dataArray = null;
 		byte[] hash = null;
+		String hashString;
 		
-		byteArray = Serializer.serialize(packet);
+		dataArray = Serializer.serialize(packet);
 
 		sizeBuffer = ByteBuffer.allocate(4);
 
-		size = byteArray.length;
+		size = dataArray.length;
 		sizeBuffer.putInt(size);
 
-		hash = getSha256(byteArray);
+		hash = getSha256(dataArray);
+		hashString = bytesToHex(hash);
+		if (packet.code == Code.SEND) {
+			Files.writeDataToFile(hashString, dataArray);
+			if (Files.readPacketFromFile(hashString) == null) {
+				/* TODO: remove this test */
+				System.err.printf("some stuffup\n");
+			}
+
+		}
 		hashBuffer = ByteBuffer.wrap(hash);
 
-		buffer = ByteBuffer.wrap(byteArray);
+		buffer = ByteBuffer.wrap(dataArray);
 
-		System.out.printf("Send hash %s\n", bytesToHex(hash));
+		System.out.printf("Send hash %s\n", hashString);
 		sizeBuffer.flip();
 		srcs[0] = sizeBuffer;
 		srcs[1] = hashBuffer;
