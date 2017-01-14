@@ -33,7 +33,14 @@ public class Packet implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	public int code;
+	public String surname;
 	public String name;
+	public String id_number;
+	public String cellphone;
+	public String email;
+	public String math_mark;
+	public String science_mark;
+	public String eng_mark;
     public String data;
 	public String to;
 	public Set<String> users;
@@ -41,7 +48,14 @@ public class Packet implements Serializable {
     
 	public Packet() {
 		this.code = -1;
+		this.surname = null;
 		this.name = null;
+		this.id_number = null;
+		this.cellphone = null;
+		this.email = null;
+		this.math_mark = null;
+		this.science_mark = null;
+		this.eng_mark = null;
 		this.data = null;
 		this.to = null;
 		this.users = null;
@@ -49,6 +63,13 @@ public class Packet implements Serializable {
     public Packet(int code, String name, String data, String to) {
 		this.code = code;
 		this.name = name;
+		this.surname = null;
+		this.id_number = null;
+		this.cellphone = null;
+		this.email = null;
+		this.math_mark = null;
+		this.science_mark = null;
+		this.eng_mark = null;
 		this.data = null;
 		this.to = null;
 		this.users = null;
@@ -75,8 +96,16 @@ public class Packet implements Serializable {
 		StringBuilder sb = new StringBuilder();	
 
 		sb.append("packet:\n");
-		sb.append("\tCode: " + this.code + "\n");
-		sb.append("\tName: " + this.name + "\n");
+		sb.append("\tCode: "		+ this.code + "\n");
+		sb.append("\tSurname: "		+ this.surname + "\n");
+		sb.append("\tName: "		+ this.name + "\n");
+		sb.append("\tid number: "	+ this.id_number + "\n");
+		sb.append("\tcellphone: "	+ this.cellphone + "\n");
+		sb.append("\temail: "		+ this.email + "\n");
+		sb.append("\tmaths mark: "	+ this.math_mark + "\n");
+		sb.append("\tscience mark: " + this.science_mark + "\n");
+		sb.append("\tenglish mark: " + this.eng_mark + "\n");
+
 		sb.append("\tData: " + this.data + "\n");
 		sb.append("\tTo: " + this.to + "\n");
 		sb.append("\tUsers: " + this.users + "\n");
@@ -131,6 +160,12 @@ public class Packet implements Serializable {
 		byte[] dataArray = null;
 		byte[] hash = null;
 		String hashString;
+
+		if (packet == null) {
+			return;
+		} else {
+			System.out.printf(packet.toString());
+		}
 		
 		dataArray = Serializer.serialize(packet);
 
@@ -143,10 +178,11 @@ public class Packet implements Serializable {
 		hashString = bytesToHex(hash);
 		if (packet.code == Code.SEND) {
 			Files.writeDataToFile(hashString, dataArray);
+			/*
 			if (Files.readPacketFromFile(hashString) == null) {
-				/* TODO: remove this test */
 				System.err.printf("some stuffup\n");
 			}
+			*/
 
 		}
 		hashBuffer = ByteBuffer.wrap(hash);
@@ -251,6 +287,7 @@ public class Packet implements Serializable {
 		}
 
         packet = (Packet)Serializer.deserialize(byteArr);
+		System.out.printf(packet.toString());
 		return packet;
 	}
 }
