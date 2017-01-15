@@ -121,7 +121,11 @@ public class ClientSpeaker implements Runnable {
 		
 	}
 
-	public boolean login(String password) 
+	public String getName() {
+		return this.name;
+	}
+
+	public boolean login() 
 	{
 		Packet packet = null;
 		Selector selector = null;
@@ -144,7 +148,7 @@ public class ClientSpeaker implements Runnable {
 		} catch (Exception e) {
 		}
 
-		packet = new Packet(Code.LOGIN, this.name, password, null);
+		packet = new Packet(Code.LOGIN, null, null, null);
 
 		System.out.printf("Sending log in packet\n");
 		if(!this.sendPacket(packet)) {
@@ -177,11 +181,12 @@ public class ClientSpeaker implements Runnable {
 			return false;
 		}
 
-		if (packet.data.equals("accept")) {
+		if (packet.data.equals("denial")) {
+			return false;
+		} else {
+			this.name = packet.data;
 			attachClientShutDownHook(this.socketChannel);
 			return true;
-		} else {
-			return false;
 		}
 		
 	}

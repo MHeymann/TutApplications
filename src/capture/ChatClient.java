@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.Arrays;
 import capture.client.*;
 import java.io.Console;
+import java.io.File;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +61,7 @@ public class ChatClient extends JFrame implements ActionListener {
 
 		/* NorthPanel */
 		JPanel northPanel = new JPanel(new GridLayout(4,1));
-		/* Spacte to enter the server's name and port number */
+		/* Space to enter the server's name and port number */
 		JPanel serverPortPanel = new JPanel(new GridLayout(1,5, 1,3));
 		/* start up the text fields for server name and port number */
 		tfServerIP = new JTextField(this.hostAddress);
@@ -133,7 +134,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		 */
 		taMessages = new JTextArea("Message area:\n", 80, 80);
 		taUsers = new JTextArea("\n", 80, 80);
-		JPanel centerPanel = new JPanel(new GridLayout(1,1));
+		JPanel centerPanel = new JPanel(new GridLayout(1,2));
 		centerPanel.add(new JScrollPane(taMessages));
 		centerPanel.add(new JScrollPane(taUsers));
 		taMessages.setEditable(false);
@@ -265,7 +266,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			tfData.requestFocus();
 			return;
 		}
-		if (connected) {
+		if ((connected) && (o == tfData)) {
 			/* sending message */
 			String mtext = tfData.getText();
 			String rname = tfName.getText();
@@ -282,6 +283,7 @@ public class ChatClient extends JFrame implements ActionListener {
 
 		if ((o == login) || (o == tfData)) {
 			String username = tfName.getText().trim();
+			/*
 			if (username.length() == 0) {
 				return;
 			}
@@ -290,6 +292,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			if (password.length() == 0) {
 				return;
 			}
+			*/
 
 			String server = tfServerIP.getText().trim();
 			if (server.length() == 0) {
@@ -308,13 +311,13 @@ public class ChatClient extends JFrame implements ActionListener {
 				return;
 			}
 			
-			this.speaker = new ClientSpeaker(username, server, port, true);
-			this.myName = username;
+			this.speaker = new ClientSpeaker("defaultName", server, port, true);
 			/* open connection if possible */
 
-			if (!this.speaker.login(password)) {
+			if (!this.speaker.login()) {
 				return;
 			}
+			this.myName = speaker.getName();
 			System.out.printf("logged in\n");
 
 			this.listener = new ClientListener(this.speaker.getSocketChannel(), this, username);
@@ -367,7 +370,13 @@ public class ChatClient extends JFrame implements ActionListener {
 		Thread threadListen = null;
 		ClientSpeaker speaker = null;
 		ClientListener listener = null;
+		File dir = null;
 		
+		dir = new File("data");
+		if ((!dir.exists()) && (!dir.mkdir())) {
+			System.out.printf("failed to make directory 'data' as required\n");
+		}
+
 		if ((args.length >= 1) && args[0].equals("terminal")) {
 
 			System.out.printf("Please enter your username: ");
@@ -377,7 +386,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			line = getPassword();
 
 			System.out.printf("%s with password %s \n", name, line);
-			if (!speaker.login(line)) {
+			if (!speaker.login()) {
 				return;
 			}
 			listener = new ClientListener(speaker.getSocketChannel());

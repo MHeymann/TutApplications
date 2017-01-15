@@ -4,6 +4,7 @@ import java.util.Scanner;
 import capture.server.Users;
 import capture.server.ServerListener;
 import capture.server.ServerSpeaker;
+import java.io.File;
 
 /*
  * Author Murray Heymann
@@ -32,6 +33,12 @@ public class ChatServer {
 		ServerListener listener = null;
 		Scanner scanner = null;
 		int[] ports;
+		File dir = null;
+
+		dir = new File("data");
+		if ((!dir.exists()) && (!dir.mkdir())) {
+			System.out.printf("Failed to create 'data' directory as required\n");
+		}
 
 		scanner = new Scanner(System.in);
 		String line;
@@ -47,6 +54,7 @@ public class ChatServer {
 		listenThread.start();
 		speakThread = new Thread(speaker);
 		speakThread.start();
+
 
 		System.out.printf("Server running\n");
 
