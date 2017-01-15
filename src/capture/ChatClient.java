@@ -527,12 +527,7 @@ public class ChatClient extends JFrame implements ActionListener {
     public static void main(String[] args)  {
 		@SuppressWarnings("unused")
 		ChatClient client = null;
-		String line = null;
-		String name = null;
-		Thread threadSpeaker = null;
-		Thread threadListen = null;
-		ClientSpeaker speaker = null;
-		ClientListener listener = null;
+		
 		File dir = null;
 		
 		dir = new File("data");

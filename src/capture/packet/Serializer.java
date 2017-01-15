@@ -1,10 +1,10 @@
 package capture.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+//import java.io.ByteArrayInputStream;
+//import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+//import java.io.ObjectInputStream;
+//import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.HashSet;
 
@@ -29,7 +29,7 @@ public class Serializer {
 
     public static byte[] serialize(Packet packet) throws IOException {
 		int size = 0;
-		int i;
+//		int i;
 		ByteBuffer bb = null;
 
 		if(packet == null) {
@@ -112,7 +112,7 @@ public class Serializer {
 	}
 
 	private static void write_string(ByteBuffer bb, String s) {
-		int i;
+	//	int i;
 		
 		if (s == null) {
 			bb.putInt(0);
@@ -135,7 +135,7 @@ public class Serializer {
 		/*
 		StringBuilder sb = null;
 		*/
-		int i;
+//		int i;
 		
 		len = bb.getInt();
 		if (len == 0) {
@@ -154,12 +154,12 @@ public class Serializer {
 		}
 	}
     public static Packet deserialize(byte[] bytes) {
-		int len;
-		int i, j;
+//		int len;
+		int i;
 		int userCount;
 		HashSet<String> users;
 		
-		StringBuilder sb;
+//		StringBuilder sb;
 		Packet packet = new Packet();
 		ByteBuffer bb = ByteBuffer.wrap(bytes);
 

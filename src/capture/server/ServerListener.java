@@ -193,9 +193,6 @@ public class ServerListener implements Runnable
 		}
 	}
 
-	private boolean checkUserPassword(String name, String pw) {
-		return true;
-	}
 
 	public static void main( String args[] ) throws Exception {
 		ServerListener listener = null;
