@@ -1,3 +1,3 @@
 #! /bin/bash
-echo java chat.ChatClient
-java chat.ChatClient
+echo java capture.ChatClient
+java capture.ChatClient

@@ -1,8 +1,8 @@
-package chat;
+package capture;
 
 import java.util.Set;
 import java.util.Arrays;
-import chat.client.*;
+import capture.client.*;
 import java.io.Console;
 
 import javax.swing.*;

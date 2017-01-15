@@ -1,9 +1,9 @@
-package chat.client;
+package capture.client;
 
 import java.io.*;
 import java.nio.channels.*;
 import java.net.*;
-import chat.packet.*;
+import capture.packet.*;
 import java.util.Scanner;
 
 import static javax.swing.JOptionPane.showMessageDialog;

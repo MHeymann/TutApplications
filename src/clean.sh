@@ -1,5 +1,5 @@
 #! /bin/bash
-rm -rv chat/*.class
-rm -rv chat/client/*.class
-rm -rv chat/packet/*.class
-rm -rv chat/server/*.class
+rm -rv capture/*.class
+rm -rv capture/client/*.class
+rm -rv capture/packet/*.class
+rm -rv capture/server/*.class

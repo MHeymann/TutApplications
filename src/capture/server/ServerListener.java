@@ -1,12 +1,12 @@
 // $Id$
-package chat.server;
+package capture.server;
 
 import java.net.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReadWriteLock;
-import chat.packet.*;
+import capture.packet.*;
 
 /*
  * Author: Murray Heymann

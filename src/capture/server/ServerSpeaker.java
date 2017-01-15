@@ -1,11 +1,11 @@
-package chat.server;
+package capture.server;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.*;
 
-import chat.packet.Packet;
-import chat.packet.Code;
+import capture.packet.Packet;
+import capture.packet.Code;
 
 public class ServerSpeaker implements Runnable {
 	private Users users = null;

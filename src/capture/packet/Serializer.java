@@ -1,4 +1,4 @@
-package chat.packet;
+package capture.packet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,7 +21,7 @@ public class Serializer {
 	private static int get_string_buffer_size(String s) {
 		int ret_size = 4;
 		if (s != null) {
-			ret_size += s.length() * 2;
+			ret_size += s.length() /* * 2*/;
 		}
 
 		return ret_size;
@@ -118,28 +118,39 @@ public class Serializer {
 			bb.putInt(0);
 		} else {
 			bb.putInt(s.length());
+			bb.put(s.getBytes());
+			/*
 			for (i = 0; i < s.length(); i++)
 			{
 				bb.putChar(s.charAt(i));
 			}
+			*/
 		}
 	}
 
 
 	private static String readStringFromBuffer(ByteBuffer bb) {
 		int len = 0;
+		byte[] bytes = null;
+		/*
 		StringBuilder sb = null;
+		*/
 		int i;
 		
 		len = bb.getInt();
 		if (len == 0) {
 			return null;
 		} else {
+			bytes = new byte[len];
+			bb.get(bytes);
+			return new String(bytes);
+			/*
 			sb = new StringBuilder(len);
 			for (i = 0; i < len; i++) {
 				sb.append(bb.getChar());
 			}
 			return sb.toString();
+			*/
 		}
 	}
     public static Packet deserialize(byte[] bytes) {

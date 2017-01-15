@@ -1,4 +1,4 @@
-package chat.packet;
+package capture.packet;
 
 import java.io.Serializable;
 import java.io.*;
@@ -177,9 +177,9 @@ public class Packet implements Serializable {
 		hash = getSha256(dataArray);
 		hashString = bytesToHex(hash);
 		if (packet.code == Code.SEND) {
-			Files.writeDataToFile(hashString, dataArray);
+			FileMethods.writeDataToFile(hashString, dataArray);
 			/*
-			if (Files.readPacketFromFile(hashString) == null) {
+			if (FileMethods.readPacketFromFile(hashString) == null) {
 				System.err.printf("some stuffup\n");
 			}
 			*/

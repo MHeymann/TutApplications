@@ -1,9 +1,9 @@
-package chat;
+package capture;
 
 import java.util.Scanner;
-import chat.server.Users;
-import chat.server.ServerListener;
-import chat.server.ServerSpeaker;
+import capture.server.Users;
+import capture.server.ServerListener;
+import capture.server.ServerSpeaker;
 
 /*
  * Author Murray Heymann

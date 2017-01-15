@@ -1,4 +1,4 @@
-package chat.packet;
+package capture.packet;
 
 /*
  * Author: Murray Heymann

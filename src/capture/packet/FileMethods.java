@@ -1,10 +1,10 @@
-package chat.packet;
+package capture.packet;
 
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.ByteBuffer;
 
-public class Files {
+public class FileMethods {
 
 	public static boolean writePacketToFile(Packet packet) {
 		return true;

@@ -1,4 +1,4 @@
-package chat.server;
+package capture.server;
 
 import java.io.*;
 import java.util.*;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.nio.channels.*;
 
-import chat.packet.Packet;
+import capture.packet.Packet;
 
 /*
  * author Murray Heymann
