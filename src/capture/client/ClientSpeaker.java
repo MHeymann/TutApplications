@@ -81,8 +81,22 @@ public class ClientSpeaker implements Runnable {
 		}
 	}
 
-	public boolean sendString(String s, String to) {
-		Packet packet = new Packet(Code.SEND, this.name, s, to);
+	public boolean sendStrings(String sName, String fName, String sID, 
+			String sCell, String sEmail, String sMaths, String sScience, 
+			String sEng, String comment) {
+		Packet packet = new Packet(Code.SEND, fName, comment, this.name);
+		packet.surname = sName;
+		packet.name = fName;
+		packet.id_number = sID;
+		packet.cellphone = sCell;
+		packet.email = sEmail;
+		packet.math_mark = sMaths;
+		packet.science_mark = sScience;
+		packet.eng_mark = sEng;
+		packet.data = comment;
+		packet.to = this.name;
+		packet.users = null;
+
 		return this.sendPacket(packet);
 	}
 
