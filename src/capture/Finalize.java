@@ -67,20 +67,14 @@ public class Finalize extends JFrame implements ActionListener {
 	/* For displaying messages */
 	private JTextArea taMessages = null, taUsers = null;
 
-	/* The port to connect to */
-	private int portNo = -1;
-	/* The host ip address */
-	private String hostAddress = null;
 	
-	public Finalize(String host, int port) {
+	public Finalize(String csvFileName) {
 		super("Finalizer");
-		this.portNo = port;
-		this.hostAddress = host;
 
-		this.csvFile = new File("candidates.csv");
+		this.csvFile = new File(csvFileName);
 		try {
 			if (csvFile.createNewFile()) {
-				System.out.printf("created new csv file\n");
+				System.out.printf("created new csv file %s\n", csvFileName);
 				if (!appendCSV("Surname,Name,Cell,Email,ID,Maths,Science,English,Comments\n")) { 
 					System.err.printf("failed to put headers in csv\n");
 				}
@@ -502,6 +496,6 @@ public class Finalize extends JFrame implements ActionListener {
 
 		
 		
-		client = new Finalize("localhost", 8002);
+		client = new Finalize("candidates.csv");
 	}
 }
