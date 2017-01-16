@@ -327,6 +327,7 @@ public class ChatClient extends JFrame implements ActionListener {
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(800, 610);
+		this.setResizable(false);
 		this.setVisible(true);
 
 

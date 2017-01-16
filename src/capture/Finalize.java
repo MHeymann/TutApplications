@@ -302,6 +302,7 @@ public class Finalize extends JFrame implements ActionListener {
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(800, 595);
+		this.setResizable(false);
 		this.setVisible(true);
 
 
