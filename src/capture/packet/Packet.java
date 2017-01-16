@@ -60,6 +60,23 @@ public class Packet implements Serializable {
 		this.to = null;
 		this.users = null;
 	}
+    public Packet(int code, String surname, String name, String id_number,
+			String cellphone, String email, String math_mark, 
+			String science_mark, String eng_mark, String data, String to) {
+		this.code = code;
+		this.surname = surname;
+		this.name = name;
+		this.id_number = id_number;
+		this.cellphone = cellphone;
+		this.email = email;
+		this.math_mark = math_mark;
+		this.science_mark = science_mark;
+		this.eng_mark = eng_mark;
+		this.data = data;
+		this.to = to;
+		this.users = null;	
+	}
+
     public Packet(int code, String name, String data, String to) {
 		this.code = code;
 		this.name = name;
