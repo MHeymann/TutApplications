@@ -52,7 +52,7 @@ public class ChatClient extends JFrame implements ActionListener {
 	/* For entering the ip and port number */
 	private JTextField tfServerIP = null, tfPortNo = null;
 	/* Buttons for actions to be performed */
-	private JButton login = null, /*logout = null,*/  
+	private JButton login = null, cancel = null,  
 			echo = null, submit = null;; 
 	/* For displaying messages */
 	private JTextArea taMessages = null, taUsers = null;
@@ -311,6 +311,9 @@ public class ChatClient extends JFrame implements ActionListener {
 		echo = new JButton("Echo");
 		echo.addActionListener(this);
 		echo.setEnabled(false);
+		cancel = new JButton("Cancel");
+		cancel.addActionListener(this);
+		cancel.setEnabled(false);
 
 		southPanel.add(login);
 		/*
@@ -318,11 +321,12 @@ public class ChatClient extends JFrame implements ActionListener {
 		*/
 		southPanel.add(submit);
 		southPanel.add(echo);
+		southPanel.add(cancel);
 
 		this.add(southPanel, BorderLayout.SOUTH);
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setSize(800, 600);
+		this.setSize(800, 610);
 		this.setVisible(true);
 
 
@@ -376,6 +380,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		logout.setEnabled(false);
 		*/
 		echo.setEnabled(false);
+		cancel.setEnabled(false);
 		submit.setEnabled(false);
 		label.setText("Enter your Username and password below");
 		this.resetTextFields();	
@@ -422,6 +427,12 @@ public class ChatClient extends JFrame implements ActionListener {
 			tfData.requestFocus();
 			return;
 		}
+
+		if ((connected) && (o == cancel)) {
+			this.resetTextFields();	
+			return;
+		}
+
 		if ((connected) && (o == submit)) {
 			/* sending message */
 
@@ -492,6 +503,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			*/
 			echo.setEnabled(true);
 			submit.setEnabled(true);
+			cancel.setEnabled(true);
 
 			tfServerIP.setEditable(false);
 			tfPortNo.setEditable(false);

@@ -63,7 +63,7 @@ public class Finalize extends JFrame implements ActionListener {
 	private final JFileChooser fchoose;
 
 	/* Buttons for actions to be performed */
-	private JButton open = null, submit = null; 
+	private JButton open = null, submit = null, cancel = null; 
 	/* For displaying messages */
 	private JTextArea taMessages = null, taUsers = null;
 
@@ -290,9 +290,13 @@ public class Finalize extends JFrame implements ActionListener {
 		submit = new JButton("Submit");
 		submit.addActionListener(this);
 		submit.setEnabled(false);
+		cancel = new JButton("Cancel");
+		cancel.addActionListener(this);
+		cancel.setEnabled(false);
 
 		southPanel.add(open);
 		southPanel.add(submit);
+		southPanel.add(cancel);
 
 		this.add(southPanel, BorderLayout.SOUTH);
 
@@ -331,6 +335,7 @@ public class Finalize extends JFrame implements ActionListener {
 	public void brokenConnection() {
 		open.setEnabled(true);
 		submit.setEnabled(false);
+		cancel.setEnabled(false);
 		label.setText("Use the 'Open Details' button to load a student file\n");
 		this.resetTextFields();	
 
@@ -424,6 +429,11 @@ public class Finalize extends JFrame implements ActionListener {
 			return;
 		}
 
+		if (o == cancel) {
+			this.resetTextFields();	
+			this.brokenConnection();
+		}
+
 		if (o == open) {
 			Packet p = null;
 
@@ -448,6 +458,7 @@ public class Finalize extends JFrame implements ActionListener {
 	
 				open.setEnabled(false);
 				submit.setEnabled(true);
+				cancel.setEnabled(true);
 	
 				tfName.setEditable(true);
 				tfData.setEditable(true);
