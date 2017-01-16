@@ -39,6 +39,10 @@ public class ChatServer {
 		if ((!dir.exists()) && (!dir.mkdir())) {
 			System.out.printf("Failed to create 'data' directory as required\n");
 		}
+		dir = new File("serverdata");
+		if ((!dir.exists()) && (!dir.mkdir())) {
+			System.out.printf("Failed to create 'serverdata' directory as required\n");
+		}
 
 		scanner = new Scanner(System.in);
 		String line;

@@ -179,8 +179,10 @@ public class Packet implements Serializable {
 		if (packet.code == Code.SEND) {
 			FileMethods.writeDataToFile(hashString, dataArray);
 			/*
-			if (FileMethods.readPacketFromFile(hashString) == null) {
+			if (FileMethods.readPacketFromFile("data/", hashString, hashString) == null) {
 				System.err.printf("some stuffup\n");
+			} else {
+				System.out.printf("file written and read successfully\n");
 			}
 			*/
 

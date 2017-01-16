@@ -6,6 +6,8 @@ import java.util.*;
 
 import capture.packet.Packet;
 import capture.packet.Code;
+import capture.packet.Serializer;
+import capture.packet.FileMethods;
 
 public class ServerSpeaker implements Runnable {
 	private Users users = null;
@@ -70,7 +72,26 @@ public class ServerSpeaker implements Runnable {
 			packet = null;
 			packet = q.poll();
 			if (packet.code == Code.SEND) {
-				System.out.printf("Sending message: %s -> %s %s\n", packet.name, packet.to, packet.data);
+				byte[] bytes = null;
+				String hash = null;
+				String filename = null;
+
+				System.out.printf("processing packet: \n" + packet.toString());
+				try {
+					bytes = Serializer.serialize(packet);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				hash = Packet.bytesToHex(Packet.getSha256(bytes));
+				filename = packet.surname + "_" + packet.name + "_" + hash;
+				System.out.printf("saving as serverdata/%s\n", filename);
+				
+				FileMethods.writeDataToFile("serverdata/", filename, bytes);
+				System.out.printf("processed packet\n");
+				
+
+				//this.users.sendPacket(packet);
+				packet = null;
 			} else if (packet.code == Code.GET_ULIST) {
 				onlineUsers = null;
 				if (packet.users == null) {
@@ -85,9 +106,9 @@ public class ServerSpeaker implements Runnable {
 				}
 				packet.name = null;
 				System.out.printf("Sending list of online users to %s\n", packet.to);
+				this.users.sendPacket(packet);
+				packet = null;
 			}
-			this.users.sendPacket(packet);
-			packet = null;
 		}
 	}
 }

@@ -51,3 +51,4 @@ nio/*
 .settings
 
 data
+serverdata
