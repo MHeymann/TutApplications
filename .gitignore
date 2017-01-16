@@ -54,4 +54,6 @@ data
 serverdata
 csv_candidates
 processed
+pdf
 candidates.csv
+earlybackup.csv

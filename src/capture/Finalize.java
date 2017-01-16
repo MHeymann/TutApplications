@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import capture.packet.FileMethods;
 import capture.packet.Packet;
 import capture.packet.Serializer;
+import capture.receipt.Receipt;
 
 import javax.swing.*;
 import java.awt.*;
@@ -63,7 +64,7 @@ public class Finalize extends JFrame implements ActionListener {
 	private final JFileChooser fchoose;
 
 	/* Buttons for actions to be performed */
-	private JButton open = null, submit = null, cancel = null; 
+	private JButton open = null, submit = null, print = null, cancel = null; 
 	/* For displaying messages */
 	private JTextArea taMessages = null, taUsers = null;
 
@@ -290,12 +291,16 @@ public class Finalize extends JFrame implements ActionListener {
 		submit = new JButton("Submit");
 		submit.addActionListener(this);
 		submit.setEnabled(false);
+		print = new JButton("Print");
+		print.addActionListener(this);
+		print.setEnabled(false);
 		cancel = new JButton("Cancel");
 		cancel.addActionListener(this);
 		cancel.setEnabled(false);
 
 		southPanel.add(open);
 		southPanel.add(submit);
+		southPanel.add(print);
 		southPanel.add(cancel);
 
 		this.add(southPanel, BorderLayout.SOUTH);
@@ -336,6 +341,7 @@ public class Finalize extends JFrame implements ActionListener {
 	public void brokenConnection() {
 		open.setEnabled(true);
 		submit.setEnabled(false);
+		print.setEnabled(false);
 		cancel.setEnabled(false);
 		label.setText("Use the 'Open Details' button to load a student file\n");
 		this.resetTextFields();	
@@ -429,6 +435,14 @@ public class Finalize extends JFrame implements ActionListener {
 
 			return;
 		}
+		if (o == print) {
+			Receipt rec = new Receipt("pdf");
+			try {
+				rec.generateReceipt(tfSurname.getText(), tfName.getText(), tfIdNo.getText());
+			} catch (Exception ea) {
+				ea.printStackTrace();
+			}
+		}
 
 		if (o == cancel) {
 			this.resetTextFields();	
@@ -459,6 +473,7 @@ public class Finalize extends JFrame implements ActionListener {
 	
 				open.setEnabled(false);
 				submit.setEnabled(true);
+				print.setEnabled(true);
 				cancel.setEnabled(true);
 	
 				tfName.setEditable(true);
