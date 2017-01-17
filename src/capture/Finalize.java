@@ -408,7 +408,7 @@ public class Finalize extends JFrame implements ActionListener {
 			Packet p = new Packet(this.code, sname, fname, sID, sCell, 
 					sEmail, sMaths, sScience, sEng, comments, 
 					this.clientName);	
-			// TODO: add to csv
+			// Done: add to csv
 			if (!appendCSV(sname + "," + fname + "," + sCell + "," + sEmail + 
 						"," + sID + "," + sMaths + "," + sScience + "," + 
 						sEng + "," + comments + "\n")) 
@@ -455,7 +455,7 @@ public class Finalize extends JFrame implements ActionListener {
 			int returnVal = fchoose.showOpenDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				System.out.printf("file selected: %s\n", fchoose.getSelectedFile().getName());
-				p = FileMethods.readPacketFromFile("serverdata/", fchoose.getSelectedFile().getName());	
+				p = FileMethods.readPacketFromFile(fchoose.getSelectedFile());	
 				this.resetTextFields();	
 				tfSurname.setText(p.surname);
 				tfName.setText(p.name);

@@ -1,6 +1,7 @@
 package capture.packet;
 
 import java.io.RandomAccessFile;
+import java.io.File;
 import java.nio.channels.FileChannel;
 import java.nio.ByteBuffer;
 
@@ -71,12 +72,22 @@ public class FileMethods {
 	}
 
 	public static byte[] readDataFromFile(String dir, String filename) {
-		RandomAccessFile file = null; 
+		File file = null;
+		try {
+			file = new File(dir + filename);
+			return readDataFromFile(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public static byte[] readDataFromFile(File file) {
+		RandomAccessFile rfile = null; 
 		FileChannel fc = null; 
 		ByteBuffer buf = null;
 		try {
-			file = new RandomAccessFile(dir + filename, "r");
-			fc = file.getChannel();
+			rfile = new RandomAccessFile(file, "r");
+			fc = rfile.getChannel();
 			buf = ByteBuffer.allocate((int)file.length());
 			while (fc.read(buf) != 0);
 		} catch (Exception e) {
@@ -92,9 +103,9 @@ public class FileMethods {
 				}
 			}
 		}
-		if (file != null) {
+		if (rfile != null) {
 			try {
-				file.close();
+				rfile.close();
 			} catch (Exception ee) {
 				ee.printStackTrace();
 				return null;
@@ -130,4 +141,16 @@ public class FileMethods {
 
 		return packet;
 	}
+
+	public static Packet readPacketFromFile(File file) {
+		byte[] data = null;
+		Packet packet = null;
+
+		data = readDataFromFile(file);
+		if (data != null) {
+			packet = (Packet)Serializer.deserialize(data);
+		}
+		return packet;
+	}
+
 }

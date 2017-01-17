@@ -3,6 +3,8 @@ package capture.receipt;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.lang.Process;
 
@@ -72,11 +74,12 @@ public class Receipt {
 		this.dir = dir;
 	}
 	
+
 	public void generateReceipt(String surname, String name, String id_no) throws Exception {
 		long index = -1;
 		int i;
 		FileWriter fw = null;
-		String filename = surname + "_" + name + "_" + id_no;
+		String filename = null;
 		File file = new File(this.dir + "/counter");
 		Scanner scanner = null;
 		scanner = new Scanner(file);
@@ -85,6 +88,23 @@ public class Receipt {
 		fw = new FileWriter(file);
 		fw.write(" " + index);
 		fw.close();
+		String sn, fn;
+
+		sn = new String(surname);
+		fn = new String(name);
+
+		for (i = 0; i < sn.length(); i++) {
+			if (sn.charAt(i) == ' ') {
+				sn = sn.substring(0, i) + "_" + sn.substring(i+1);;
+			}
+		}
+		for (i = 0; i < fn.length(); i++) {
+			if (fn.charAt(i) == ' ') {
+				fn = fn.substring(0, i) + "_" + fn.substring(i+1);;
+			}
+		}
+		filename = sn + "_" + fn + "_" + id_no;
+		System.out.printf(filename + "\n");
 
 		file = new File(this.dir + "/" + filename + ".tex");
 		file.createNewFile();
@@ -105,10 +125,19 @@ public class Receipt {
 		bw.close();
 		fw.close();
 
+
+		System.out.printf("generating pdf receipt\n");
 		Process p = Runtime.getRuntime().exec("pdflatex -output-directory " + this.dir + " " + this.dir + "/" + filename + ".tex");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+			System.out.printf(line + "\n");
+		}
 		p.waitFor();
+		System.out.printf("pdf generated.  instructing default printer to print\n");
 		p = Runtime.getRuntime().exec("lpr " + this.dir + "/" + filename + ".pdf");
 		p.waitFor();
+		System.out.printf("print instructions sent\n");
 
 	}
 }
