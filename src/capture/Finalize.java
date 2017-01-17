@@ -96,7 +96,7 @@ public class Finalize extends JFrame implements ActionListener {
 		northPanel.add(label);
 		tfName = new JTextField("Name");
 		tfName.setEditable(false);
-		tfData = new JTextField("Comments");
+		tfData = new JTextField(" ");
 		tfData.setEditable(false);
 		tfSurname = new JTextField("Surname");
 		tfSurname.setEditable(false);
@@ -128,13 +128,13 @@ public class Finalize extends JFrame implements ActionListener {
 
 		fldConnect = new FocusListener() {
 			public void focusGained(FocusEvent e) {
-				if (tfData.getText().equals("Comments")) {
+				if (tfData.getText().equals(" ")) {
 					tfData.setText("");
 				}
 			}
 			public void focusLost(FocusEvent e) {
 				if (tfData.getText().equals("")) {
-					tfData.setText("Comments");
+					tfData.setText(" ");
 				}
 			}
 		};
@@ -327,7 +327,7 @@ public class Finalize extends JFrame implements ActionListener {
 
 	private void resetTextFields() {
 		tfName.setText("Name");
-		tfData.setText("Comments");
+		tfData.setText(" ");
 		tfSurname.setText("Surname");
 		tfCell.setText("Cellphone");
 		tfEmail.setText("Email");

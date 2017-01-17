@@ -140,13 +140,13 @@ public class ChatClient extends JFrame implements ActionListener {
 
 		fldConnect = new FocusListener() {
 			public void focusGained(FocusEvent e) {
-				if (tfData.getText().equals("Message")) {
+				if (tfData.getText().equals(" ")) {
 					tfData.setText("");
 				}
 			}
 			public void focusLost(FocusEvent e) {
 				if (tfData.getText().equals("")) {
-					tfData.setText("Message");
+					tfData.setText(" ");
 				}
 			}
 		};
@@ -331,7 +331,14 @@ public class ChatClient extends JFrame implements ActionListener {
 		this.setVisible(true);
 
 
+		tfSurname.addActionListener(this);
 		tfName.addActionListener(this);
+		tfIdNo.addActionListener(this);
+		tfCell.addActionListener(this);
+		tfEmail.addActionListener(this);
+		tfMaths.addActionListener(this);
+		tfScience.addActionListener(this);
+		tfEng.addActionListener(this);
 		tfData.addActionListener(this);
 
 		tfSurname.requestFocus();
@@ -364,7 +371,7 @@ public class ChatClient extends JFrame implements ActionListener {
 
 	private void resetTextFields() {
 		tfName.setText("Name");
-		tfData.setText("Message");
+		tfData.setText(" ");
 		tfSurname.setText("Surname");
 		tfCell.setText("Cellphone");
 		tfEmail.setText("Email");
@@ -385,7 +392,7 @@ public class ChatClient extends JFrame implements ActionListener {
 		submit.setEnabled(false);
 		label.setText("Enter your Username and password below");
 		this.resetTextFields();	
-		tfData.setText("Message");
+		tfData.setText(" ");
 
 		tfData.removeFocusListener(fldConnect);
 		tfData.addFocusListener(fldLogin);
@@ -424,17 +431,53 @@ public class ChatClient extends JFrame implements ActionListener {
 			return;
 		}
 
+		if (o == tfSurname) {
+			tfName.requestFocus();
+			return;
+		}
+
 		if (o == tfName) {
+			tfIdNo.requestFocus();
+			return;
+		}
+
+		if (o == tfIdNo) {
+			tfCell.requestFocus();
+			return;
+		}
+
+		if (o == tfCell) {
+			tfEmail.requestFocus();
+			return;
+		}
+
+		if (o == tfEmail) {
+			tfMaths.requestFocus();
+			return;
+		}
+
+		if (o == tfMaths) {
+			tfScience.requestFocus();
+			return;
+		}
+
+		if (o == tfScience) {
+			tfEng.requestFocus();
+			return;
+		}
+
+		if (o == tfEng) {
 			tfData.requestFocus();
 			return;
 		}
+
 
 		if ((connected) && (o == cancel)) {
 			this.resetTextFields();	
 			return;
 		}
 
-		if ((connected) && (o == submit)) {
+		if ((connected) && ((o == submit) || (o == tfData))) {
 			/* sending message */
 
 			String sname = tfSurname.getText();
@@ -491,7 +534,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			Thread thread = new Thread(listener);
 			thread.start();
 
-			tfData.setText("Message");
+			tfData.setText(" ");
 			tfData.removeFocusListener(fldLogin);
 			tfData.addFocusListener(fldConnect);
 			tfName.setText("Name");
