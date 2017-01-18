@@ -76,7 +76,7 @@ public class ServerSpeaker implements Runnable {
 				String hash = null;
 				String filename = null;
 
-				System.out.printf("processing packet: \n" + packet.toString());
+				System.out.printf("processing packet\n");
 				try {
 					bytes = Serializer.serialize(packet);
 				} catch (Exception e) {

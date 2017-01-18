@@ -1,5 +1,6 @@
 package capture;
 
+import capture.datachecks.DataChecks;
 import java.util.Set;
 import java.util.Arrays;
 import capture.client.*;
@@ -477,7 +478,7 @@ public class ChatClient extends JFrame implements ActionListener {
 			return;
 		}
 
-		if ((connected) && ((o == submit) || (o == tfData))) {
+		if ((connected) && (o == submit)) {
 			/* sending message */
 
 			String sname = tfSurname.getText();
@@ -489,15 +490,18 @@ public class ChatClient extends JFrame implements ActionListener {
 			String sScience = tfScience.getText();
 			String sEng = tfEng.getText();
 			String comments = tfData.getText();
-			if (speaker.sendStrings(sname, fname, sID, sCell, sEmail, sMaths, 
+			if (!DataChecks.isValidId(sID, this)) {
+				// TODO: through error message
+				JOptionPane.showMessageDialog(this, "Invalid Id input.");
+				System.out.printf("Invalid Id\n");
+			} else if (speaker.sendStrings(sname, fname, sID, sCell, sEmail, sMaths, 
 						sScience, sEng, comments)) {
-				//this.append(this.myName + " to " + rname + ": " + mtext + "\n");
 				//TODO: some message to indicate success
+				this.resetTextFields();	
 			} else {
 				this.append("Some error sending data\n");
 			}
 				
-			this.resetTextFields();	
 			return;
 		}
 
